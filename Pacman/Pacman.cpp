@@ -50,6 +50,22 @@ void Pacman::Update(int elapsedTime)
 	// Checks if D key is pressed
 	if (keyboardState->IsKeyDown(Input::Keys::D))
 		_pacmanPosition->X += 0.1f * elapsedTime; //Moves Pacman across X axis
+
+	if (keyboardState->IsKeyDown(Input::Keys::A))
+		_pacmanPosition->X -= 0.1f * elapsedTime; 
+
+	if (keyboardState->IsKeyDown(Input::Keys::W))
+		_pacmanPosition->Y += 0.1f * elapsedTime; 
+	
+	if (keyboardState->IsKeyDown(Input::Keys::S))
+		_pacmanPosition->Y -= 0.1f * elapsedTime;
+
+	//Colliding with the walls.
+
+	if (_pacmanPosition->X + _pacmanSourceRect->Width > 1024)
+	{
+		_pacmanPosition->X = 1024 - _pacmanSourceRect->Width;
+	}
 }
 
 void Pacman::Draw(int elapsedTime)
