@@ -1,0 +1,3 @@
+C:/Users/bruno/Downloads/Framework(S2Dv1.5)/Pacman/cmake-build-debug/CMakeFiles/Pacman.dir
+C:/Users/bruno/Downloads/Framework(S2Dv1.5)/Pacman/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/bruno/Downloads/Framework(S2Dv1.5)/Pacman/cmake-build-debug/CMakeFiles/rebuild_cache.dir
