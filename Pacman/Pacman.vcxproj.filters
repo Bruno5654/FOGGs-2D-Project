@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Pacman.cpp">
+    <ClCompile Include="TankGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pacman.h">
+    <ClInclude Include="TankGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
