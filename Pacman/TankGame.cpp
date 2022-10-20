@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.2f)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f)
 {
 	_frameCount = 0;
 	_paused = true;
@@ -21,9 +21,9 @@ TankGame::~TankGame()
 {
 	delete _playerTexture;
 	delete _playerSourceRect;
-	delete _munchieBlueTexture;
-	delete _munchieInvertedTexture;
-	delete _munchieRect;
+	delete _ammoBlueTexture;
+	delete _ammoInvertedTexture;
+	delete _ammoRect;
 }
 
 void TankGame::LoadContent()
@@ -34,12 +34,12 @@ void TankGame::LoadContent()
 	_playerPosition = new Vector2(350.0f, 350.0f);
 	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
 
-	// Load Munchie
-	_munchieBlueTexture = new Texture2D();
-	_munchieBlueTexture->Load("Textures/Munchie.tga", true);
-	_munchieInvertedTexture = new Texture2D();
-	_munchieInvertedTexture->Load("Textures/MunchieInverted.tga", true);
-	_munchieRect = new Rect(100.0f, 450.0f, 12, 12);
+	// Load Ammo
+	_ammoBlueTexture = new Texture2D();
+	_ammoBlueTexture->Load("Textures/Munchie.tga", true);
+	_ammoInvertedTexture = new Texture2D();
+	_ammoInvertedTexture->Load("Textures/MunchieInverted.tga", true);
+	_ammoRect = new Rect(100.0f, 450.0f, 12, 12);
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -49,6 +49,7 @@ void TankGame::LoadContent()
 	_menuBackground->Load("Textures/Transparency.png", false);
 	_menuRectangle = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
 	_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
+	_startStringPosition = new Vector2(550.0f, Graphics::GetViewportHeight() / 2.0f);
 }
 
 void TankGame::Update(int elapsedTime)
@@ -76,16 +77,22 @@ void TankGame::Update(int elapsedTime)
 	{
 		//Checks for WASD and moves player.
 		if (keyboardState->IsKeyDown(Input::Keys::D))
+		{
 			_playerPosition->X += _cPlayerSpeed * elapsedTime;
-
-		if (keyboardState->IsKeyDown(Input::Keys::A))
+		}	
+		else if (keyboardState->IsKeyDown(Input::Keys::A))
+		{
 			_playerPosition->X -= _cPlayerSpeed * elapsedTime;
-
-		if (keyboardState->IsKeyDown(Input::Keys::S))
+		}
+		else if (keyboardState->IsKeyDown(Input::Keys::S))
+		{
 			_playerPosition->Y += _cPlayerSpeed * elapsedTime;
-
-		if (keyboardState->IsKeyDown(Input::Keys::W))
+		}	
+		else if (keyboardState->IsKeyDown(Input::Keys::W))
+		{
 			_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
+		}
+			
 
 		//Colliding with the walls.
 		if (_playerPosition->X + _playerSourceRect->Width > Graphics::GetViewportWidth())
@@ -118,19 +125,19 @@ void TankGame::Draw(int elapsedTime)
 	// Allows us to easily create a string
 	std::stringstream stream;
 	stream << "Player X: " << _playerPosition->X << " Y: " << _playerPosition->Y;
-
+	
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); // Draws player
 
 	if (_frameCount < 30)
 	{
 		// Draws Red Munchie
-		SpriteBatch::Draw(_munchieInvertedTexture, _munchieRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		SpriteBatch::Draw(_ammoInvertedTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 	}
 	else
 	{
 		// Draw Blue Munchie
-		SpriteBatch::Draw(_munchieBlueTexture, _munchieRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		SpriteBatch::Draw(_ammoBlueTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 		
 		_frameCount++;
 
@@ -153,7 +160,7 @@ void TankGame::Draw(int elapsedTime)
 		std::stringstream menuStream;
 		menuStream << "Press Space to Start";
 		SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
-		SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::Green);
+		SpriteBatch::DrawString(menuStream.str().c_str(),_startStringPosition, Color::Green);
 	}
 	
 	SpriteBatch::EndDraw(); // Ends Drawing

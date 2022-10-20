@@ -20,7 +20,7 @@ using namespace S2D;
 class TankGame : public Game
 {
 private:
-	// Data to represent Pacman
+	// Data to represent Player
 	Vector2* _playerPosition;
 	Rect* _playerSourceRect;
 	Texture2D* _playerTexture;
@@ -28,11 +28,11 @@ private:
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
 
-	// Data to represent Munchie
+	// Data to represent Ammo
 	int _frameCount;
-	Rect* _munchieRect;
-	Texture2D* _munchieBlueTexture;
-	Texture2D* _munchieInvertedTexture;
+	Rect* _ammoRect;
+	Texture2D* _ammoBlueTexture;
+	Texture2D* _ammoInvertedTexture;
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -41,6 +41,7 @@ private:
 	Texture2D* _menuBackground;
 	Rect* _menuRectangle;
 	Vector2* _menuStringPosition;
+	Vector2* _startStringPosition;
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
