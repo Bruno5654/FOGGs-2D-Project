@@ -21,9 +21,12 @@ class Pacman : public Game
 {
 private:
 	// Data to represent Pacman
-	Vector2* _pacmanPosition;
-	Rect* _pacmanSourceRect;
-	Texture2D* _pacmanTexture;
+	Vector2* _playerPosition;
+	Rect* _playerSourceRect;
+	Texture2D* _playerTexture;
+
+	//Constant data for Game Variables.
+	const float _cPlayerSpeed;
 
 	// Data to represent Munchie
 	int _frameCount;
@@ -33,6 +36,15 @@ private:
 
 	// Position for String
 	Vector2* _stringPosition;
+
+	//Data for Menu
+	Texture2D* _menuBackground;
+	Rect* _menuRectangle;
+	Vector2* _menuStringPosition;
+	bool _paused;
+	bool _escKeyDown;
+	bool _startGameMenu;
+
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
