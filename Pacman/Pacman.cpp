@@ -47,24 +47,38 @@ void Pacman::Update(int elapsedTime)
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
-	// Checks if D key is pressed
+	// Checks for WASD and moves player.
 	if (keyboardState->IsKeyDown(Input::Keys::D))
-		_pacmanPosition->X += 0.1f * elapsedTime; //Moves Pacman across X axis
+		_pacmanPosition->X += 0.2f * elapsedTime; 
 
 	if (keyboardState->IsKeyDown(Input::Keys::A))
-		_pacmanPosition->X -= 0.1f * elapsedTime; 
+		_pacmanPosition->X -= 0.2f * elapsedTime; 
 
-	if (keyboardState->IsKeyDown(Input::Keys::W))
-		_pacmanPosition->Y += 0.1f * elapsedTime; 
-	
 	if (keyboardState->IsKeyDown(Input::Keys::S))
-		_pacmanPosition->Y -= 0.1f * elapsedTime;
+		_pacmanPosition->Y += 0.2f * elapsedTime; 
+	
+	if (keyboardState->IsKeyDown(Input::Keys::W))
+		_pacmanPosition->Y -= 0.2f * elapsedTime;
 
 	//Colliding with the walls.
-
 	if (_pacmanPosition->X + _pacmanSourceRect->Width > 1024)
 	{
 		_pacmanPosition->X = 1024 - _pacmanSourceRect->Width;
+	}
+	
+	if (_pacmanPosition->X < 0)
+	{
+		_pacmanPosition->X = 0;
+	}
+
+	if (_pacmanPosition->Y + _pacmanSourceRect->Height > 768)
+	{
+		_pacmanPosition->Y = 768 - _pacmanSourceRect->Height;
+	}
+
+	if (_pacmanPosition->Y < 0)
+	{
+		_pacmanPosition->Y = 0;
 	}
 }
 
