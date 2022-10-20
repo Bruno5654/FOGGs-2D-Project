@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.2f)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.2f)
 {
 	_frameCount = 0;
 	_paused = true;
@@ -10,14 +10,14 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.2f)
 	_escKeyDown = false;
 
 	//Initialise important Game aspects
-	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Pacman", 60);
+	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
 	Input::Initialise();
 
 	// Start the Game Loop - This calls Update and Draw in game loop
 	Graphics::StartGameLoop();
 }
 
-Pacman::~Pacman()
+TankGame::~TankGame()
 {
 	delete _playerTexture;
 	delete _playerSourceRect;
@@ -26,7 +26,7 @@ Pacman::~Pacman()
 	delete _munchieRect;
 }
 
-void Pacman::LoadContent()
+void TankGame::LoadContent()
 {
 	// Load Player
 	_playerTexture = new Texture2D();
@@ -51,7 +51,7 @@ void Pacman::LoadContent()
 	_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
 }
 
-void Pacman::Update(int elapsedTime)
+void TankGame::Update(int elapsedTime)
 {
 	//Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
@@ -113,7 +113,7 @@ void Pacman::Update(int elapsedTime)
 	}
 }
 
-void Pacman::Draw(int elapsedTime)
+void TankGame::Draw(int elapsedTime)
 {
 	// Allows us to easily create a string
 	std::stringstream stream;

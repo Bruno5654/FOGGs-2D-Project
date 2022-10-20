@@ -17,7 +17,7 @@ using namespace S2D;
 // Declares the Pacman class which inherits from the Game class.
 // This allows us to overload the Game class methods to help us
 // load content, draw and update our game.
-class Pacman : public Game
+class TankGame : public Game
 {
 private:
 	// Data to represent Pacman
@@ -48,10 +48,10 @@ private:
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
-	Pacman(int argc, char* argv[]);
+	TankGame(int argc, char* argv[]);
 
-	/// <summary> Destroys any data associated with Pacman class. </summary>
-	virtual ~Pacman();
+	/// <summary> Destroys any data associated with Player class. </summary>
+	virtual ~TankGame();
 
 	/// <summary> All content should be loaded in this method. </summary>
 	void virtual LoadContent();
