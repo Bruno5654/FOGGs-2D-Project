@@ -29,7 +29,7 @@ void TankGame::LoadContent()
 	//Load Player
 	_playerTexture = new Texture2D();
 	_playerTexture->Load("Textures/TankBaseSheet.png", false);
-	_playerTexture->Load("Textures/TankTurretSheet.png", false);
+	//_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
 	_playerPosition = new Vector2(350.0f, 350.0f);
 	_playerLastPosition = new Vector2(350.0f, 350.0f);
 	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
@@ -205,8 +205,8 @@ void TankGame::Draw(int elapsedTime)
 	stream << "Player X: " << _playerPosition->X << " Y: " << _playerPosition->Y;
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
-	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); // Draws player
-	SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect);
+	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); //Draws player.
+	//SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect); //Draws player turret.
 
 	if (_ammoFrameCount == 0)
 	{
