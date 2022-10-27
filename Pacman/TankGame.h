@@ -24,7 +24,10 @@ private:
 	Vector2* _playerPosition;
 	Vector2* _playerLastPosition;
 	Rect* _playerSourceRect;
+	Rect* _playerTurretSourceRect;
 	Texture2D* _playerTexture;
+	Texture2D* _playerTurretTexture;
+
 	int _playerDirection;
 	int _playerFrame;
 	int _playerCurrentFrameTime;

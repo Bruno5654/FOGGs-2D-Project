@@ -15,7 +15,9 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 TankGame::~TankGame() 
 {
 	delete _playerTexture;
+	delete _playerTurretTexture;
 	delete _playerSourceRect;
+	delete _playerTurretSourceRect;
 	delete _ammoBlueTexture;
 	delete _ammoInvertedTexture;
 	delete _ammoRect;
@@ -27,9 +29,11 @@ void TankGame::LoadContent()
 	//Load Player
 	_playerTexture = new Texture2D();
 	_playerTexture->Load("Textures/TankBaseSheet.png", false);
+	_playerTexture->Load("Textures/TankTurretSheet.png", false);
 	_playerPosition = new Vector2(350.0f, 350.0f);
 	_playerLastPosition = new Vector2(350.0f, 350.0f);
 	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_playerTurretSourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_playerDirection = 0;
 	_playerCurrentFrameTime = 0;
 	_playerFrame = 0;
@@ -202,6 +206,7 @@ void TankGame::Draw(int elapsedTime)
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); // Draws player
+	SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect);
 
 	if (_ammoFrameCount == 0)
 	{
