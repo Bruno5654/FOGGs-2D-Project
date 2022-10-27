@@ -22,17 +22,28 @@ class TankGame : public Game
 private:
 	// Data to represent Player
 	Vector2* _playerPosition;
+	Vector2* _playerLastPosition;
 	Rect* _playerSourceRect;
 	Texture2D* _playerTexture;
+	int _playerDirection;
+	int _playerFrame;
+	int _playerCurrentFrameTime;
+	bool _playerIsMoving;
+
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
+	const int _cPlayerFrameTime;
+	const int _cAmmoFrameTime;
 
 	// Data to represent Ammo
-	int _frameCount;
 	Rect* _ammoRect;
 	Texture2D* _ammoBlueTexture;
 	Texture2D* _ammoInvertedTexture;
+	int _ammoFrame;
+	int _ammoCurrentFrameTime;
+	int _ammoFrameCount;
+
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -45,6 +56,9 @@ private:
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
+
+	
+	
 
 
 public:

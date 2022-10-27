@@ -2,13 +2,8 @@
 
 #include <sstream>
 
-TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500)
 {
-	_frameCount = 0;
-	_paused = true;
-	_startGameMenu = true;
-	_escKeyDown = false;
-
 	//Initialise important Game aspects
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
 	Input::Initialise();
@@ -17,31 +12,39 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	Graphics::StartGameLoop();
 }
 
-TankGame::~TankGame()
+TankGame::~TankGame() 
 {
 	delete _playerTexture;
 	delete _playerSourceRect;
 	delete _ammoBlueTexture;
 	delete _ammoInvertedTexture;
 	delete _ammoRect;
+	delete _menuBackground;
 }
 
-void TankGame::LoadContent()
+void TankGame::LoadContent() 
 {
-	// Load Player
+	//Load Player
 	_playerTexture = new Texture2D();
-	_playerTexture->Load("Textures/Pacman.tga", false);
+	_playerTexture->Load("Textures/TankBaseSheet.png", false);
 	_playerPosition = new Vector2(350.0f, 350.0f);
+	_playerLastPosition = new Vector2(350.0f, 350.0f);
 	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_playerDirection = 0;
+	_playerCurrentFrameTime = 0;
+	_playerFrame = 0;
+	_playerIsMoving = false;
 
-	// Load Ammo
+	//Load Ammo
 	_ammoBlueTexture = new Texture2D();
 	_ammoBlueTexture->Load("Textures/Munchie.tga", true);
 	_ammoInvertedTexture = new Texture2D();
 	_ammoInvertedTexture->Load("Textures/MunchieInverted.tga", true);
 	_ammoRect = new Rect(100.0f, 450.0f, 12, 12);
+	_ammoCurrentFrameTime = 0;
+	_ammoFrameCount = 0;
 
-	// Set string position
+	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 
 	//Set menu parameters
@@ -50,6 +53,9 @@ void TankGame::LoadContent()
 	_menuRectangle = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
 	_menuStringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
 	_startStringPosition = new Vector2(550.0f, Graphics::GetViewportHeight() / 2.0f);
+	_paused = true;
+	_startGameMenu = true;
+	_escKeyDown = false;
 }
 
 void TankGame::Update(int elapsedTime)
@@ -75,22 +81,93 @@ void TankGame::Update(int elapsedTime)
 	//For things that need to stop when paused.
 	if (!_paused)
 	{
+		_playerLastPosition->X = _playerPosition->X;
+		_playerLastPosition->Y = _playerPosition->Y;
+		
 		//Checks for WASD and moves player.
 		if (keyboardState->IsKeyDown(Input::Keys::D))
 		{
 			_playerPosition->X += _cPlayerSpeed * elapsedTime;
+			_playerDirection = 0;
 		}	
 		else if (keyboardState->IsKeyDown(Input::Keys::A))
 		{
 			_playerPosition->X -= _cPlayerSpeed * elapsedTime;
+			_playerDirection = 2;
 		}
 		else if (keyboardState->IsKeyDown(Input::Keys::S))
 		{
 			_playerPosition->Y += _cPlayerSpeed * elapsedTime;
+			_playerDirection = 1;
 		}	
 		else if (keyboardState->IsKeyDown(Input::Keys::W))
 		{
 			_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
+			_playerDirection = 3;
+		}
+
+		//Checking if the player is moving.
+		if (_playerDirection == 0 || _playerDirection == 2)
+		{
+			if (_playerLastPosition->X > _playerPosition->X || _playerLastPosition->X < _playerPosition->X)
+			{
+				_playerIsMoving = true;
+			}
+			else
+			{
+				_playerIsMoving = false;
+			}
+		}
+		else
+		{
+			if (_playerLastPosition->Y > _playerPosition->Y || _playerLastPosition->Y < _playerPosition->Y)
+			{
+				_playerIsMoving = true;
+			}
+			else
+			{
+				_playerIsMoving = false;
+			}
+		}
+
+		if (_playerIsMoving)
+		{
+			//Tracking time since last player animation frame change.
+			_playerCurrentFrameTime += elapsedTime;
+
+			//Updating the x column of the animation.
+			if (_playerCurrentFrameTime > _cPlayerFrameTime)
+			{
+				_playerFrame++;
+
+				if (_playerFrame >= 4)
+				{
+					_playerFrame = 0;
+				}
+
+				_playerCurrentFrameTime = 0;
+
+				_playerSourceRect->X = _playerSourceRect->Width * _playerFrame;
+			}
+		}
+
+		//Changing player direction
+		_playerSourceRect->Y = _playerSourceRect->Height * _playerDirection;
+		
+		//Tracking time since last ammo animation frame change.
+		_ammoCurrentFrameTime += elapsedTime;
+
+		//Updating the ammo frame.
+		if (_ammoCurrentFrameTime > _cAmmoFrameTime)
+		{
+			_ammoFrameCount++;
+
+			if (_ammoFrameCount >= 2)
+			{
+				_ammoFrameCount = 0;
+			}
+
+			_ammoCurrentFrameTime = 0;
 		}
 			
 
@@ -114,9 +191,6 @@ void TankGame::Update(int elapsedTime)
 		{
 			_playerPosition->Y = 0;
 		}
-
-		//Frame count
-		_frameCount++;
 	}
 }
 
@@ -129,7 +203,7 @@ void TankGame::Draw(int elapsedTime)
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); // Draws player
 
-	if (_frameCount < 30)
+	if (_ammoFrameCount == 0)
 	{
 		// Draws Red Munchie
 		SpriteBatch::Draw(_ammoInvertedTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
@@ -138,11 +212,9 @@ void TankGame::Draw(int elapsedTime)
 	{
 		// Draw Blue Munchie
 		SpriteBatch::Draw(_ammoBlueTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-		
-		_frameCount++;
 
-		if (_frameCount >= 60)
-			_frameCount = 0;
+		if (_ammoFrameCount >= 60)
+			_ammoFrameCount = 0;
 	}
 	
 	// Draws String
