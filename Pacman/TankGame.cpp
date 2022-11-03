@@ -39,10 +39,6 @@ void TankGame::LoadContent()
 	_playerCurrentFrameTime = 0;
 	_playerFrame = 0;
 	_playerIsMoving = false;
-	_turretXOffset = 0;
-	_turretYOffset = 5;
-	_RotatedTurretXOffset = 0;
-	_RotatedTurretYOffset = 0;
 
 
 	//Load Ammo
@@ -86,8 +82,6 @@ void TankGame::Update(int elapsedTime)
 		UpdateAmmo(elapsedTime);
 		CheckViewportCollision();
 
-		//_RotatedTurretXOffset = _turretXOffset * cos() - _turretYOffset * sin();
-		//_RotatedTurretYOffset = _turretXOffset * sin() - _turretYOffset * cos();
 	}
 }
 
@@ -208,7 +202,6 @@ void TankGame::UpdatePlayer(int elapsedTime)
 
 	//Changing player direction
 	_playerSourceRect->Y = _playerSourceRect->Height * _playerDirection;
-
 }
 
 void TankGame::UpdateAmmo(int elapsedTime)

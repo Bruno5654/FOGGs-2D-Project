@@ -43,10 +43,6 @@ private:
 	int _playerDirection;
 	int _playerFrame;
 	int _playerCurrentFrameTime;
-	int _turretXOffset;
-	int _turretYOffset;
-	int _RotatedTurretXOffset;
-	int _RotatedTurretYOffset;
 
 	bool _playerIsMoving;
 
