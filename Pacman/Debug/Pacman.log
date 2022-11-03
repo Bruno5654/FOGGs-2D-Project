@@ -11,8 +11,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.32.3
               _Ty=S2D::Input::Keys
           ]
 C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>' being compiled
-C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(154,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(159,52): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(181,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(191,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(143,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(153,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(205,52): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(210,51): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Pacman.vcxproj -> C:\Users\r019574m\Documents\GitHub\FOGGs-2D-Project\Debug\TankGame.exe

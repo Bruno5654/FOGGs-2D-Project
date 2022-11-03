@@ -28,8 +28,9 @@ void TankGame::LoadContent()
 {
 	//Load Player
 	_playerTexture = new Texture2D();
+	_playerTurretTexture = new Texture2D();
 	_playerTexture->Load("Textures/TankBaseSheet.png", false);
-	//_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
+	_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
 	_playerPosition = new Vector2(350.0f, 350.0f);
 	_playerLastPosition = new Vector2(350.0f, 350.0f);
 	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
@@ -38,6 +39,11 @@ void TankGame::LoadContent()
 	_playerCurrentFrameTime = 0;
 	_playerFrame = 0;
 	_playerIsMoving = false;
+	_turretXOffset = 0;
+	_turretYOffset = 5;
+	_RotatedTurretXOffset = 0;
+	_RotatedTurretYOffset = 0;
+
 
 	//Load Ammo
 	_ammoBlueTexture = new Texture2D();
@@ -67,134 +73,160 @@ void TankGame::Update(int elapsedTime)
 	//Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 	
-	//Checks for pause input.
-	if (keyboardState->IsKeyDown(Input::Keys::ESCAPE) && !_escKeyDown && !_startGameMenu)
-	{
-		_escKeyDown = true;
-		_paused = !_paused;
-	}
-	if (keyboardState->IsKeyUp(Input::Keys::ESCAPE))
-		_escKeyDown = false;
+	CheckPaused(keyboardState);
 
-	if (keyboardState->IsKeyDown(Input::Keys::SPACE) && _startGameMenu)
-	{
-		_startGameMenu = false;
-		_paused = !_paused;
-	}
-	
 	//For things that need to stop when paused.
 	if (!_paused)
 	{
 		_playerLastPosition->X = _playerPosition->X;
 		_playerLastPosition->Y = _playerPosition->Y;
-		
-		//Checks for WASD and moves player.
-		if (keyboardState->IsKeyDown(Input::Keys::D))
-		{
-			_playerPosition->X += _cPlayerSpeed * elapsedTime;
-			_playerDirection = 0;
-		}	
-		else if (keyboardState->IsKeyDown(Input::Keys::A))
-		{
-			_playerPosition->X -= _cPlayerSpeed * elapsedTime;
-			_playerDirection = 2;
-		}
-		else if (keyboardState->IsKeyDown(Input::Keys::S))
-		{
-			_playerPosition->Y += _cPlayerSpeed * elapsedTime;
-			_playerDirection = 1;
-		}	
-		else if (keyboardState->IsKeyDown(Input::Keys::W))
-		{
-			_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
-			_playerDirection = 3;
-		}
 
-		//Checking if the player is moving.
-		if (_playerDirection == 0 || _playerDirection == 2)
+		Input(elapsedTime, keyboardState);
+		UpdatePlayer(elapsedTime);
+		UpdateAmmo(elapsedTime);
+		CheckViewportCollision();
+
+		//_RotatedTurretXOffset = _turretXOffset * cos() - _turretYOffset * sin();
+		//_RotatedTurretYOffset = _turretXOffset * sin() - _turretYOffset * cos();
+	}
+}
+
+void TankGame::Input(int elapsedTime, Input::KeyboardState* state)
+{
+	//WASD Input
+	if (state->IsKeyDown(Input::Keys::D))
+	{
+		_playerPosition->X += _cPlayerSpeed * elapsedTime;
+		_playerDirection = 0;
+	}
+	else if (state->IsKeyDown(Input::Keys::A))
+	{
+		_playerPosition->X -= _cPlayerSpeed * elapsedTime;
+		_playerDirection = 2;
+	}
+	else if (state->IsKeyDown(Input::Keys::S))
+	{
+		_playerPosition->Y += _cPlayerSpeed * elapsedTime;
+		_playerDirection = 1;
+	}
+	else if (state->IsKeyDown(Input::Keys::W))
+	{
+		_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
+		_playerDirection = 3;
+	}
+}
+
+void TankGame::CheckPaused(Input::KeyboardState* state)
+{
+	//Checks for pause input.
+	if (state->IsKeyDown(Input::Keys::ESCAPE) && !_escKeyDown && !_startGameMenu)
+	{
+		_escKeyDown = true;
+		_paused = !_paused;
+	}
+
+	if (state->IsKeyUp(Input::Keys::ESCAPE))
+		_escKeyDown = false;
+
+	if ((state->IsKeyDown(Input::Keys::SPACE) && _startGameMenu))
+	{
+		_startGameMenu = false;
+		_paused = !_paused;
+	}
+}
+
+void TankGame::CheckViewportCollision()
+{
+	//Colliding with the walls.
+	if (_playerPosition->X + _playerSourceRect->Width > Graphics::GetViewportWidth())
+	{
+		_playerPosition->X = Graphics::GetViewportWidth() - _playerSourceRect->Width;
+	}
+
+	if (_playerPosition->X < 0)
+	{
+		_playerPosition->X = 0;
+	}
+
+	if (_playerPosition->Y + _playerSourceRect->Height > Graphics::GetViewportHeight())
+	{
+		_playerPosition->Y = Graphics::GetViewportHeight() - _playerSourceRect->Height;
+	}
+
+	if (_playerPosition->Y < 0)
+	{
+		_playerPosition->Y = 0;
+	}
+}
+
+void TankGame::UpdatePlayer(int elapsedTime)
+{
+	//Checking if the player is moving.
+	if (_playerDirection == 0 || _playerDirection == 2)
+	{
+		if (_playerLastPosition->X > _playerPosition->X || _playerLastPosition->X < _playerPosition->X)
 		{
-			if (_playerLastPosition->X > _playerPosition->X || _playerLastPosition->X < _playerPosition->X)
-			{
-				_playerIsMoving = true;
-			}
-			else
-			{
-				_playerIsMoving = false;
-			}
+			_playerIsMoving = true;
 		}
 		else
 		{
-			if (_playerLastPosition->Y > _playerPosition->Y || _playerLastPosition->Y < _playerPosition->Y)
-			{
-				_playerIsMoving = true;
-			}
-			else
-			{
-				_playerIsMoving = false;
-			}
+			_playerIsMoving = false;
 		}
-
-		if (_playerIsMoving)
+	}
+	else
+	{
+		if (_playerLastPosition->Y > _playerPosition->Y || _playerLastPosition->Y < _playerPosition->Y)
 		{
-			//Tracking time since last player animation frame change.
-			_playerCurrentFrameTime += elapsedTime;
-
-			//Updating the x column of the animation.
-			if (_playerCurrentFrameTime > _cPlayerFrameTime)
-			{
-				_playerFrame++;
-
-				if (_playerFrame >= 4)
-				{
-					_playerFrame = 0;
-				}
-
-				_playerCurrentFrameTime = 0;
-
-				_playerSourceRect->X = _playerSourceRect->Width * _playerFrame;
-			}
+			_playerIsMoving = true;
 		}
-
-		//Changing player direction
-		_playerSourceRect->Y = _playerSourceRect->Height * _playerDirection;
-		
-		//Tracking time since last ammo animation frame change.
-		_ammoCurrentFrameTime += elapsedTime;
-
-		//Updating the ammo frame.
-		if (_ammoCurrentFrameTime > _cAmmoFrameTime)
+		else
 		{
-			_ammoFrameCount++;
+			_playerIsMoving = false;
+		}
+	}
 
-			if (_ammoFrameCount >= 2)
+	if (_playerIsMoving)
+	{
+		//Tracking time since last player animation frame change.
+		_playerCurrentFrameTime += elapsedTime;
+
+		//Updating the x column of the animation.
+		if (_playerCurrentFrameTime > _cPlayerFrameTime)
+		{
+			_playerFrame++;
+
+			if (_playerFrame >= 4)
 			{
-				_ammoFrameCount = 0;
+				_playerFrame = 0;
 			}
 
-			_ammoCurrentFrameTime = 0;
-		}
-			
+			_playerCurrentFrameTime = 0;
 
-		//Colliding with the walls.
-		if (_playerPosition->X + _playerSourceRect->Width > Graphics::GetViewportWidth())
+			_playerSourceRect->X = _playerSourceRect->Width * _playerFrame;
+		}
+	}
+
+	//Changing player direction
+	_playerSourceRect->Y = _playerSourceRect->Height * _playerDirection;
+
+}
+
+void TankGame::UpdateAmmo(int elapsedTime)
+{
+	//Tracking time since last ammo animation frame change.
+	_ammoCurrentFrameTime += elapsedTime;
+
+	//Updating the ammo frame.
+	if (_ammoCurrentFrameTime > _cAmmoFrameTime)
+	{
+		_ammoFrameCount++;
+
+		if (_ammoFrameCount >= 2)
 		{
-			_playerPosition->X = Graphics::GetViewportWidth() - _playerSourceRect->Width;
+			_ammoFrameCount = 0;
 		}
 
-		if (_playerPosition->X < 0)
-		{
-			_playerPosition->X = 0;
-		}
-
-		if (_playerPosition->Y + _playerSourceRect->Height > Graphics::GetViewportHeight())
-		{
-			_playerPosition->Y = Graphics::GetViewportHeight() - _playerSourceRect->Height;
-		}
-
-		if (_playerPosition->Y < 0)
-		{
-			_playerPosition->Y = 0;
-		}
+		_ammoCurrentFrameTime = 0;
 	}
 }
 
@@ -206,7 +238,7 @@ void TankGame::Draw(int elapsedTime)
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); //Draws player.
-	//SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect); //Draws player turret.
+	SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect); //Draws player turret.
 
 	if (_ammoFrameCount == 0)
 	{
