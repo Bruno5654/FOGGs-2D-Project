@@ -1,10 +1,24 @@
 #include "TankGame.h"
-
 #include <sstream>
 
+//Constructor
 TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500)
 {
+	//Seed random
+	srand(time(NULL));
+	
 	//Initialise important Game aspects
+	_player = new Player();
+	
+	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+	{
+		_ammoPickup[i] = new AmmoPickup();
+		_ammoPickup[i]->_ammoFrameCount = rand() % 1;
+		_ammoPickup[i]->_ammoCurrentFrameTime = 0;
+		_ammoPickup[i]->_ammoFrame = rand() % 500 + 50;
+	}
+	
+	
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
 	Input::Initialise();
 
@@ -12,43 +26,62 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	Graphics::StartGameLoop();
 }
 
+//Destructor
 TankGame::~TankGame() 
 {
-	delete _playerTexture;
-	delete _playerTurretTexture;
-	delete _playerSourceRect;
-	delete _playerTurretSourceRect;
-	delete _ammoBlueTexture;
-	delete _ammoInvertedTexture;
-	delete _ammoRect;
+	delete _player->_playerTexture;
+	delete _player->_playerTurretTexture;
+	delete _player->_playerSourceRect;
+	delete _player->_playerTurretSourceRect;
+	
+	
+
+	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+	{
+		delete _ammoPickup[i]->_ammoRect;
+		delete _ammoPickup[i]->position;
+		delete _ammoPickup[i];
+	}
+	
+	delete _ammoTexture;
+	delete _ammoInvertTexture;
+	delete[] _ammoPickup;
+
+
 	delete _menuBackground;
+	delete _player;
 }
 
 void TankGame::LoadContent() 
 {
-	//Load Player
-	_playerTexture = new Texture2D();
-	_playerTurretTexture = new Texture2D();
-	_playerTexture->Load("Textures/TankBaseSheet.png", false);
-	_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
-	_playerPosition = new Vector2(350.0f, 350.0f);
-	_playerLastPosition = new Vector2(350.0f, 350.0f);
-	_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_playerTurretSourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_playerDirection = 0;
-	_playerCurrentFrameTime = 0;
-	_playerFrame = 0;
-	_playerIsMoving = false;
+	
+	//Initilize Player
+	_player->_playerTexture = new Texture2D();
+	_player->_playerTurretTexture = new Texture2D();
+	_player->_playerTexture->Load("Textures/TankBaseSheet.png", false);
+	_player->_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
+	_player->_playerPosition = new Vector2(350.0f, 350.0f);
+	_player->_playerLastPosition = new Vector2(350.0f, 350.0f);
+	_player->_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_player->_playerTurretSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_player->_playerDirection = 0;
+	_player->_playerCurrentFrameTime = 0;
+	_player->_playerFrame = 0;
+	_player->_playerIsMoving = false;
 
-
-	//Load Ammo
-	_ammoBlueTexture = new Texture2D();
-	_ammoBlueTexture->Load("Textures/Munchie.tga", true);
-	_ammoInvertedTexture = new Texture2D();
-	_ammoInvertedTexture->Load("Textures/MunchieInverted.tga", true);
-	_ammoRect = new Rect(100.0f, 450.0f, 12, 12);
-	_ammoCurrentFrameTime = 0;
-	_ammoFrameCount = 0;
+	//Initilize Ammo
+	
+	_ammoTexture->Load("Textures/Munchie.tga", false);
+	_ammoInvertTexture->Load("Textures/MunchieInverted.tga", true);
+	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+	{	
+		_ammoPickup[i]->_ammoBlueTexture = _ammoTexture;
+		_ammoPickup[i]->_ammoInvertedTexture = _ammoInvertTexture;
+		_ammoPickup[i]->_ammoRect = new Rect(0.0f, 0.0f, 12, 12);
+		_ammoPickup[i]->_ammoCurrentFrameTime = 0;
+		_ammoPickup[i]->_ammoFrameCount = 0;
+		_ammoPickup[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+	}
 
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -74,12 +107,18 @@ void TankGame::Update(int elapsedTime)
 	//For things that need to stop when paused.
 	if (!_paused)
 	{
-		_playerLastPosition->X = _playerPosition->X;
-		_playerLastPosition->Y = _playerPosition->Y;
+		//Determine players last position for isMoving.
+		_player->_playerLastPosition->X = _player->_playerPosition->X;
+		_player->_playerLastPosition->Y = _player->_playerPosition->Y;
 
 		Input(elapsedTime, keyboardState);
 		UpdatePlayer(elapsedTime);
-		UpdateAmmo(elapsedTime);
+		
+		for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+		{
+			UpdateAmmoPickups(i, elapsedTime);
+		}
+		
 		CheckViewportCollision();
 
 	}
@@ -87,26 +126,26 @@ void TankGame::Update(int elapsedTime)
 
 void TankGame::Input(int elapsedTime, Input::KeyboardState* state)
 {
-	//WASD Input
+	//WASD player input and movement.
 	if (state->IsKeyDown(Input::Keys::D))
 	{
-		_playerPosition->X += _cPlayerSpeed * elapsedTime;
-		_playerDirection = 0;
+		_player->_playerPosition->X += _cPlayerSpeed * elapsedTime;
+		_player->_playerDirection = 0;
 	}
 	else if (state->IsKeyDown(Input::Keys::A))
 	{
-		_playerPosition->X -= _cPlayerSpeed * elapsedTime;
-		_playerDirection = 2;
+		_player->_playerPosition->X -= _cPlayerSpeed * elapsedTime;
+		_player->_playerDirection = 2;
 	}
 	else if (state->IsKeyDown(Input::Keys::S))
 	{
-		_playerPosition->Y += _cPlayerSpeed * elapsedTime;
-		_playerDirection = 1;
+		_player->_playerPosition->Y += _cPlayerSpeed * elapsedTime;
+		_player->_playerDirection = 1;
 	}
 	else if (state->IsKeyDown(Input::Keys::W))
 	{
-		_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
-		_playerDirection = 3;
+		_player->_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
+		_player->_playerDirection = 3;
 	}
 }
 
@@ -132,119 +171,124 @@ void TankGame::CheckPaused(Input::KeyboardState* state)
 void TankGame::CheckViewportCollision()
 {
 	//Colliding with the walls.
-	if (_playerPosition->X + _playerSourceRect->Width > Graphics::GetViewportWidth())
+	if (_player->_playerPosition->X + _player->_playerSourceRect->Width > Graphics::GetViewportWidth())
 	{
-		_playerPosition->X = Graphics::GetViewportWidth() - _playerSourceRect->Width;
+		_player->_playerPosition->X = Graphics::GetViewportWidth() - _player->_playerSourceRect->Width;
 	}
 
-	if (_playerPosition->X < 0)
+	if (_player->_playerPosition->X < 0)
 	{
-		_playerPosition->X = 0;
+		_player->_playerPosition->X = 0;
 	}
 
-	if (_playerPosition->Y + _playerSourceRect->Height > Graphics::GetViewportHeight())
+	if (_player->_playerPosition->Y + _player->_playerSourceRect->Height > Graphics::GetViewportHeight())
 	{
-		_playerPosition->Y = Graphics::GetViewportHeight() - _playerSourceRect->Height;
+		_player->_playerPosition->Y = Graphics::GetViewportHeight() - _player->_playerSourceRect->Height;
 	}
 
-	if (_playerPosition->Y < 0)
+	if (_player->_playerPosition->Y < 0)
 	{
-		_playerPosition->Y = 0;
+		_player->_playerPosition->Y = 0;
 	}
 }
 
 void TankGame::UpdatePlayer(int elapsedTime)
 {
 	//Checking if the player is moving.
-	if (_playerDirection == 0 || _playerDirection == 2)
+	if (_player->_playerDirection == 0 || _player->_playerDirection == 2)
 	{
-		if (_playerLastPosition->X > _playerPosition->X || _playerLastPosition->X < _playerPosition->X)
+		if (_player->_playerLastPosition->X > _player->_playerPosition->X || _player->_playerLastPosition->X < _player->_playerPosition->X)
 		{
-			_playerIsMoving = true;
+			_player->_playerIsMoving = true;
 		}
 		else
 		{
-			_playerIsMoving = false;
+			_player->_playerIsMoving = false;
 		}
 	}
 	else
 	{
-		if (_playerLastPosition->Y > _playerPosition->Y || _playerLastPosition->Y < _playerPosition->Y)
+		if (_player->_playerLastPosition->Y > _player->_playerPosition->Y || _player->_playerLastPosition->Y < _player->_playerPosition->Y)
 		{
-			_playerIsMoving = true;
+			_player->_playerIsMoving = true;
 		}
 		else
 		{
-			_playerIsMoving = false;
+			_player->_playerIsMoving = false;
 		}
 	}
 
-	if (_playerIsMoving)
+	if (_player->_playerIsMoving)
 	{
 		//Tracking time since last player animation frame change.
-		_playerCurrentFrameTime += elapsedTime;
+		_player->_playerCurrentFrameTime += elapsedTime;
 
 		//Updating the x column of the animation.
-		if (_playerCurrentFrameTime > _cPlayerFrameTime)
+		if (_player->_playerCurrentFrameTime > _cPlayerFrameTime)
 		{
-			_playerFrame++;
+			_player->_playerFrame++;
 
-			if (_playerFrame >= 4)
+			if (_player->_playerFrame >= 4)
 			{
-				_playerFrame = 0;
+				_player->_playerFrame = 0;
 			}
 
-			_playerCurrentFrameTime = 0;
+			_player->_playerCurrentFrameTime = 0;
 
-			_playerSourceRect->X = _playerSourceRect->Width * _playerFrame;
+			_player->_playerSourceRect->X = _player->_playerSourceRect->Width * _player->_playerFrame;
 		}
 	}
 
 	//Changing player direction
-	_playerSourceRect->Y = _playerSourceRect->Height * _playerDirection;
+	_player->_playerSourceRect->Y = _player->_playerSourceRect->Height * _player->_playerDirection;
 }
 
-void TankGame::UpdateAmmo(int elapsedTime)
+void TankGame::UpdateAmmoPickups(int i,int elapsedTime)
 {
 	//Tracking time since last ammo animation frame change.
-	_ammoCurrentFrameTime += elapsedTime;
+	_ammoPickup[i]->_ammoCurrentFrameTime += elapsedTime;
 
 	//Updating the ammo frame.
-	if (_ammoCurrentFrameTime > _cAmmoFrameTime)
+	if (_ammoPickup[i]->_ammoCurrentFrameTime > _cAmmoFrameTime)
 	{
-		_ammoFrameCount++;
+		_ammoPickup[i]->_ammoFrameCount++;
 
-		if (_ammoFrameCount >= 2)
+		if (_ammoPickup[i]->_ammoFrameCount >= 2)
 		{
-			_ammoFrameCount = 0;
+			_ammoPickup[i]->_ammoFrameCount = 0;
 		}
 
-		_ammoCurrentFrameTime = 0;
+		_ammoPickup[i]->_ammoCurrentFrameTime = 0;
 	}
+	
 }
 
 void TankGame::Draw(int elapsedTime)
 {
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Player X: " << _playerPosition->X << " Y: " << _playerPosition->Y;
+	stream << "Player X: " << _player->_playerPosition->X << " Y: " << _player->_playerPosition->Y;
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
-	SpriteBatch::Draw(_playerTexture, _playerPosition, _playerSourceRect); //Draws player.
-	SpriteBatch::Draw(_playerTurretTexture, _playerPosition, _playerTurretSourceRect); //Draws player turret.
+	SpriteBatch::Draw(_player->_playerTexture, _player->_playerPosition, _player->_playerSourceRect); //Draws player.
+	//for rotation and origin look into the other draw.
+	SpriteBatch::Draw(_player->_playerTurretTexture, _player->_playerPosition, _player->_playerTurretSourceRect); //Draws player turret.
 
-	if (_ammoFrameCount == 0)
+	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{
-		// Draws Red Munchie
-		SpriteBatch::Draw(_ammoInvertedTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-	}
-	else
-	{
-		// Draw Blue Munchie
-		SpriteBatch::Draw(_ammoBlueTexture, _ammoRect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		if (_ammoPickup[i]->_ammoFrameCount == 0)
+		{
+			// Draws Red Munchie
+			SpriteBatch::Draw(_ammoPickup[i]->_ammoInvertedTexture, _ammoPickup[i]->position, _ammoPickup[i]->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		}
+		else
+		{
+			// Draw Blue Munchie
+			SpriteBatch::Draw(_ammoPickup[i]->_ammoBlueTexture, _ammoPickup[i]->position, _ammoPickup[i]->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 
-		if (_ammoFrameCount >= 60)
-			_ammoFrameCount = 0;
+			if (_ammoPickup[i]->_ammoFrameCount >= 60)
+				_ammoPickup[i]->_ammoFrameCount = 0;
+		}
 	}
 	
 	// Draws String

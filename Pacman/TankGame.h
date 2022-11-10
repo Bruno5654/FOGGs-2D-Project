@@ -8,11 +8,45 @@
 	#endif
 #endif
 
+//Macro
+#define AMMOPICKUPCOUNT 50
+
 // Just need to include main header file
 #include "S2D/S2D.h"
+#include<time.h>
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
+
+// Data to represent Player
+struct Player
+{
+	
+	Vector2* _playerPosition;
+	Vector2* _playerLastPosition;
+	Rect* _playerSourceRect;
+	Rect* _playerTurretSourceRect;
+	Texture2D* _playerTexture;
+	Texture2D* _playerTurretTexture;
+
+	int _playerDirection;
+	int _playerFrame;
+	int _playerCurrentFrameTime;
+
+	bool _playerIsMoving;	
+};
+
+// Data to represent Ammo
+struct AmmoPickup
+{
+	Rect* _ammoRect;
+	Texture2D* _ammoBlueTexture;
+	Texture2D* _ammoInvertedTexture;
+	Vector2* position;
+	int _ammoFrame;
+	int _ammoCurrentFrameTime;
+	int _ammoFrameCount;
+};
 
 // Declares the Pacman class which inherits from the Game class.
 // This allows us to overload the Game class methods to help us
@@ -30,36 +64,17 @@ private:
 
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
-	void UpdateAmmo(int elapsedTime);
-
-	// Data to represent Player
-	Vector2* _playerPosition;
-	Vector2* _playerLastPosition;
-	Rect* _playerSourceRect;
-	Rect* _playerTurretSourceRect;
-	Texture2D* _playerTexture;
-	Texture2D* _playerTurretTexture;
-
-	int _playerDirection;
-	int _playerFrame;
-	int _playerCurrentFrameTime;
-
-	bool _playerIsMoving;
-
+	void UpdateAmmoPickups(int i,int elapsedTime);
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
 	const int _cAmmoFrameTime;
 
-	// Data to represent Ammo
-	Rect* _ammoRect;
-	Texture2D* _ammoBlueTexture;
-	Texture2D* _ammoInvertedTexture;
-	int _ammoFrame;
-	int _ammoCurrentFrameTime;
-	int _ammoFrameCount;
-
+	Player* _player;
+	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
+	Texture2D* _ammoTexture = new Texture2D();
+	Texture2D* _ammoInvertTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -72,9 +87,6 @@ private:
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
-
-	
-	
 
 
 public:
