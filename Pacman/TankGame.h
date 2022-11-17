@@ -21,9 +21,10 @@ using namespace S2D;
 // Data to represent Player
 struct Player
 {
-	
 	Vector2* _playerPosition;
 	Vector2* _playerLastPosition;
+	Vector2* _playerTurretPosition;
+	Vector2* _mousePosition;
 	Rect* _playerSourceRect;
 	Rect* _playerTurretSourceRect;
 	Texture2D* _playerTexture;
@@ -32,6 +33,7 @@ struct Player
 	int _playerDirection;
 	int _playerFrame;
 	int _playerCurrentFrameTime;
+	float _turretRotation;
 
 	bool _playerIsMoving;	
 };
@@ -46,6 +48,7 @@ struct AmmoPickup
 	int _ammoFrame;
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
+	bool _isFollowingMouse;
 };
 
 // Declares the Pacman class which inherits from the Game class.
@@ -56,7 +59,7 @@ class TankGame : public Game
 private:
 	
 	//Input
-	void Input(int elapsedTime, Input::KeyboardState*state);
+	void Input(int elapsedTime, Input::KeyboardState*state,Input::MouseState*mouseState);
 
 	//Check methods
 	void CheckPaused(Input::KeyboardState* state);
@@ -73,8 +76,11 @@ private:
 
 	Player* _player;
 	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
+	AmmoPickup* _cherryPickup;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _ammoInvertTexture = new Texture2D();
+	Texture2D* _cherryTexture = new Texture2D();
+	Texture2D* _cherryInvertTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -105,3 +111,6 @@ public:
 	/// <summary> Called every frame - draw game here. </summary>
 	void virtual Draw(int elapsedTime);
 };
+
+bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
+float GetRadians(Vector2 p1, Vector2 p2);
