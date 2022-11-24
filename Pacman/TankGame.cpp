@@ -9,6 +9,7 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	
 	//Initialise important Game aspects
 	_player = new Player();
+	_player->isPlayerDead = false;
 	
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{
@@ -22,6 +23,15 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	_cherryPickup->_ammoFrameCount = rand() % 1;
 	_cherryPickup->_ammoCurrentFrameTime = 0;
 	_cherryPickup->_ammoFrame = rand() % 500 + 50;
+
+	for (int i = 0; i < ENEMYCOUNT; i++)
+	{
+		_drones[i] = new MovingEnemy();
+		_drones[i]->direction = 0;
+		_drones[i]->speed = 0.2f;
+	
+	}
+	
 	
 	
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
@@ -40,8 +50,6 @@ TankGame::~TankGame()
 	delete _player->_playerTurretSourceRect;
 	delete _player->_playerTurretPosition;
 	delete _player->_mousePosition;
-	
-	
 
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{
@@ -50,6 +58,13 @@ TankGame::~TankGame()
 		delete _ammoPickup[i];
 	}
 	
+	for (int i = 0; i < ENEMYCOUNT; i++)
+	{
+		delete _drones[i]->position;
+		delete _drones[i]->sourceRect;
+		delete _drones[i];
+	}
+
 	delete _ammoTexture;
 	delete _ammoInvertTexture;
 	delete[] _ammoPickup;
@@ -60,11 +75,15 @@ TankGame::~TankGame()
 	delete _cherryPickup;
 	delete _menuBackground;
 	delete _player;
+	delete[] _drones;
+	delete _droneTexture;
+
+
+	
 }
 
 void TankGame::LoadContent() 
 {
-	
 	//Initilize Player
 	_player->_playerTexture = new Texture2D();
 	_player->_playerTurretTexture = new Texture2D();
@@ -79,13 +98,13 @@ void TankGame::LoadContent()
 	_player->_playerDirection = 0;
 	_player->_playerCurrentFrameTime = 0;
 	_player->_playerFrame = 0;
-	_player->_playerIsMoving = false;
+	_player->_isPlayerMoving = false;
 	_player->_turretRotation = 0.0f;
 
 	//Initilize Ammo
 	
 	_ammoTexture->Load("Textures/Ammo1.tga", false);
-	_ammoInvertTexture->Load("Textures/Ammo2.tga", true);
+	_ammoInvertTexture->Load("Textures/Ammo2.tga", false);
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{	
 		_ammoPickup[i]->_ammoBlueTexture = _ammoTexture;
@@ -97,6 +116,18 @@ void TankGame::LoadContent()
 		_ammoPickup[i]->_isFollowingMouse = false;
 	}
 
+	//Initilize Drones
+
+	_droneTexture->Load("Textures/BlueGhost.png", false);
+	for (int i = 0; i < ENEMYCOUNT; i++)
+	{
+		_drones[i]->texture = _droneTexture;
+		_drones[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+		_drones[i]->sourceRect = new Rect(0.0f, 0.0f, 20, 20);
+
+	}
+
+
 	//Initilize Cherry
 	_cherryTexture->Load("Textures/Cherry (1).png", false);
 	_cherryInvertTexture->Load("Textures/Cherry (2).png", true);
@@ -107,7 +138,6 @@ void TankGame::LoadContent()
 	_cherryPickup->_ammoFrameCount = 0;
 	_cherryPickup->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 	_cherryPickup->_isFollowingMouse = false;
-
 
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -144,36 +174,6 @@ float GetRadians(Vector2* p1, Vector2* p2)
 	length1 = p1->X - p2->Y;
 	length2 = p1->Y - p2->Y;
 	return (atan(length2 / length1));
-}
-
-void TankGame::Update(int elapsedTime)
-{
-	//Gets the current state of the mouse
-	Input::MouseState* mouseState = Input::Mouse::GetState();
-	
-	//Gets the current state of the keyboard
-	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
-	
-	CheckPaused(keyboardState);
-
-	//For things that need to stop when paused.
-	if (!_paused)
-	{
-		//Determine players last position for isMoving.
-		_player->_playerLastPosition->X = _player->_playerPosition->X;
-		_player->_playerLastPosition->Y = _player->_playerPosition->Y;
-
-		Input(elapsedTime, keyboardState, mouseState);
-		UpdatePlayer(elapsedTime);
-		
-		for (int i = 0; i < AMMOPICKUPCOUNT; i++)
-		{
-			UpdateAmmoPickups(i, elapsedTime);
-		}
-		
-		CheckViewportCollision();
-
-	}
 }
 
 void TankGame::Input(int elapsedTime, Input::KeyboardState* state,Input::MouseState* mouseState)
@@ -218,8 +218,28 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state,Input::MouseSt
 
 	_player->_mousePosition->X = mouseState->X;
 	_player->_mousePosition->Y = mouseState->Y;
-	_player->_turretRotation = GetRadians(_player->_playerTurretPosition, _player->_mousePosition);
 	
+}
+
+void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime)
+{
+	if (drone->direction == 0)//Move Right
+	{
+		drone->position->X += drone->speed * elapsedTime;
+	}
+	else if (drone->direction == 1)//Move Left
+	{
+		drone->position->X -= drone->speed * elapsedTime;
+	}
+
+	if (drone->position->X + drone->sourceRect->Width >= Graphics::GetViewportWidth())//Change direction on right edge.
+	{
+		drone->direction = 1;
+	}
+	else if (drone->position->X <= 0)
+	{
+		drone->direction = 0;
+	}
 }
 
 void TankGame::CheckPaused(Input::KeyboardState* state)
@@ -272,26 +292,26 @@ void TankGame::UpdatePlayer(int elapsedTime)
 	{
 		if (_player->_playerLastPosition->X > _player->_playerPosition->X || _player->_playerLastPosition->X < _player->_playerPosition->X)
 		{
-			_player->_playerIsMoving = true;
+			_player->_isPlayerMoving = true;
 		}
 		else
 		{
-			_player->_playerIsMoving = false;
+			_player->_isPlayerMoving = false;
 		}
 	}
 	else
 	{
 		if (_player->_playerLastPosition->Y > _player->_playerPosition->Y || _player->_playerLastPosition->Y < _player->_playerPosition->Y)
 		{
-			_player->_playerIsMoving = true;
+			_player->_isPlayerMoving = true;
 		}
 		else
 		{
-			_player->_playerIsMoving = false;
+			_player->_isPlayerMoving = false;
 		}
 	}
 
-	if (_player->_playerIsMoving)
+	if (_player->_isPlayerMoving)
 	{
 		//Tracking time since last player animation frame change.
 		_player->_playerCurrentFrameTime += elapsedTime;
@@ -336,16 +356,67 @@ void TankGame::UpdateAmmoPickups(int i,int elapsedTime)
 	
 }
 
+void TankGame::Update(int elapsedTime)
+{
+	//Gets the current state of the mouse
+	Input::MouseState* mouseState = Input::Mouse::GetState();
+
+	//Gets the current state of the keyboard
+	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
+
+	CheckPaused(keyboardState);
+
+	//For things that need to stop when paused.
+	if (!_paused)
+	{
+		//Determine players last position for isMoving.
+		_player->_playerLastPosition->X = _player->_playerPosition->X;
+		_player->_playerLastPosition->Y = _player->_playerPosition->Y;
+
+		//Determine turret rotation.
+		_player->_turretRotation = GetRadians(_player->_playerTurretPosition, _player->_mousePosition);
+
+		Input(elapsedTime, keyboardState, mouseState);
+		UpdatePlayer(elapsedTime);
+
+		for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+		{
+			UpdateAmmoPickups(i, elapsedTime);
+		}
+
+		for (int i = 0; i < ENEMYCOUNT; i++)
+		{
+			UpdateDrone(_drones[i], elapsedTime);
+			if (CollisionCheck(_player->_playerPosition->X, _player->_playerPosition->Y, _player->_playerSourceRect->Width, _player->_playerSourceRect->Height, _drones[i]->position->X,
+				_drones[i]->position->Y, _drones[i]->sourceRect->Width, _drones[i]->sourceRect->Height))
+			{
+				_player->isPlayerDead = true;
+				i = ENEMYCOUNT;
+			}
+		}
+
+
+
+		CheckViewportCollision();
+
+	}
+}
+
 void TankGame::Draw(int elapsedTime)
 {
 	// Allows us to easily create a string
 	std::stringstream stream;
-	stream << "Player X: " << _player->_playerPosition->X << " Y: " << _player->_playerPosition->Y;
+	//stream << "Player X: " << _player->_playerPosition->X << " Y: " << _player->_playerPosition->Y;
+	stream << "Turret radians: " << _player->_turretRotation;
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
-	SpriteBatch::Draw(_player->_playerTexture, _player->_playerPosition, _player->_playerSourceRect); //Draws player.
-	//for rotation and origin look into the other draw.
-	SpriteBatch::Draw(_player->_playerTurretTexture, _player->_playerPosition, _player->_playerTurretSourceRect,_player->_playerTurretPosition,1,_player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
+	
+	if (!_player->isPlayerDead)
+	{
+		SpriteBatch::Draw(_player->_playerTexture, _player->_playerPosition, _player->_playerSourceRect); //Draws player.
+		//for rotation and origin look into the other draw.
+		SpriteBatch::Draw(_player->_playerTurretTexture, _player->_playerPosition, _player->_playerTurretSourceRect, _player->_playerTurretPosition, 1, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
+	}
 
 	//draw ammo
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
@@ -375,6 +446,12 @@ void TankGame::Draw(int elapsedTime)
 	{
 		// Draw Blue Munchie
 		SpriteBatch::Draw(_cherryPickup->_ammoBlueTexture, _cherryPickup->position, _cherryPickup->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+	}
+
+	//Draw drones
+	for (int i = 0; i < ENEMYCOUNT; i++)
+	{
+		SpriteBatch::Draw(_drones[i]->texture, _drones[i]->position, _drones[i]->sourceRect);
 	}
 
 	// Draws String

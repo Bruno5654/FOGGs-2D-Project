@@ -10,6 +10,7 @@
 
 //Macro
 #define AMMOPICKUPCOUNT 50
+#define ENEMYCOUNT 3
 
 // Just need to include main header file
 #include "S2D/S2D.h"
@@ -35,7 +36,8 @@ struct Player
 	int _playerCurrentFrameTime;
 	float _turretRotation;
 
-	bool _playerIsMoving;	
+	bool _isPlayerMoving;
+	bool isPlayerDead;
 };
 
 // Data to represent Ammo
@@ -49,6 +51,15 @@ struct AmmoPickup
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
 	bool _isFollowingMouse;
+};
+
+struct MovingEnemy
+{
+	Vector2* position;
+	Texture2D* texture;
+	Rect* sourceRect;
+	int direction;
+	float speed;
 };
 
 // Declares the Pacman class which inherits from the Game class.
@@ -68,6 +79,7 @@ private:
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
 	void UpdateAmmoPickups(int i,int elapsedTime);
+	void UpdateDrone(MovingEnemy* drone, int elapsedTime);
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
@@ -75,12 +87,14 @@ private:
 	const int _cAmmoFrameTime;
 
 	Player* _player;
+	MovingEnemy* _drones[ENEMYCOUNT];
 	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
 	AmmoPickup* _cherryPickup;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _ammoInvertTexture = new Texture2D();
 	Texture2D* _cherryTexture = new Texture2D();
 	Texture2D* _cherryInvertTexture = new Texture2D();
+	Texture2D* _droneTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
