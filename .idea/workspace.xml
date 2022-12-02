@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="Pacman" targetName="Pacman" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1e12d55e-40a2-4789-917c-4423f96e1fc2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.vs/TankGame/v17/Browse.VC.db" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/TankGame/v17/Browse.VC.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/TankGame/v17/ipch/AutoPCH/e755a0c6d68b8392/TANKGAME.ipch" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/TankGame/v17/ipch/AutoPCH/e755a0c6d68b8392/TANKGAME.ipch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pacman/TankGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Pacman/TankGame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pacman/TankGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/Pacman/TankGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+    </list>
+    <list id="c68623b9-d75e-4fcf-9b53-e44d35e3e01b" name="Changes by jamescoward" comment="">
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pacman/TankGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Pacman/TankGame.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/Pacman/TankGame.cpp">
+      <ranges>
+        <range start1="2" end1="2" start2="2" end2="3" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="12" end1="12" start2="13" end2="17" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="21" end1="26" start2="26" end2="26" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="34" end1="35" start2="34" end2="35" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="68" end1="75" start2="68" end2="69" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="77" end1="78" start2="71" end2="72" changelist="c68623b9-d75e-4fcf-9b53-e44d35e3e01b" />
+        <range start1="80" end1="81" start2="74" end2="76" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="91" end1="91" start2="86" end2="87" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="93" end1="94" start2="89" end2="90" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="95" end1="95" start2="91" end2="92" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="96" end1="97" start2="93" end2="96" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="100" end1="101" start2="99" end2="99" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="103" end1="103" start2="101" end2="103" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="104" end1="107" start2="104" end2="105" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="109" end1="111" start2="107" end2="108" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="129" end1="141" start2="126" end2="126" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="143" end1="143" start2="128" end2="129" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="173" end1="176" start2="159" end2="168" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="202" end1="218" start2="194" end2="194" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="336" end1="336" start2="312" end2="315" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="347" end1="347" start2="326" end2="327" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="351" end1="351" start2="331" end2="332" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="354" end1="354" start2="335" end2="336" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="375" end1="378" start2="357" end2="357" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="380" end1="380" start2="359" end2="362" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="397" end1="397" start2="379" end2="391" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="407" end1="410" start2="401" end2="407" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="415" end1="415" start2="412" end2="413" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="417" end1="418" start2="415" end2="416" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="423" end1="448" start2="421" end2="422" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+        <range start1="457" end1="458" start2="431" end2="433" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/CMakeLists.txt">
+      <ranges>
+        <range start1="3" end1="4" start2="3" end2="4" changelist="c68623b9-d75e-4fcf-9b53-e44d35e3e01b" />
+        <range start1="30" end1="32" start2="30" end2="32" changelist="1e12d55e-40a2-4789-917c-4423f96e1fc2" />
+      </ranges>
+    </file>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2022" />
+    <option name="minorVersion" value="2.3" />
+  </component>
+  <component name="ProjectId" id="2IMZZhiv3TV8S2nsdqrJBp13OOX" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "last_opened_file_path": "C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "vcs.Git"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Pacman" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Pacman" TARGET_NAME="Pacman" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Pacman" RUN_TARGET_NAME="Pacman">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1e12d55e-40a2-4789-917c-4423f96e1fc2" name="Changes" comment="" />
+      <created>1669993471554</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1669993471554</updated>
+      <workItem from="1669993483591" duration="1301000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

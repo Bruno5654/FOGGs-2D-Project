@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/bruno/Downloads/Framework(S2Dv1.5)/Pacman
+# Install script for directory: C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/bruno/Downloads/Framework(S2Dv1.5)/Pacman/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

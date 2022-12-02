@@ -2,6 +2,10 @@
   "ExpandedNodes": [
     ""
   ],
+<<<<<<< Updated upstream
   "SelectedNode": "\\Pacman.cpp",
+=======
+  "SelectedNode": "\\main.cpp",
+>>>>>>> Stashed changes
   "PreviewInSolutionExplorer": false
 }

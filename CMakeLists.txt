@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 project(Pacman)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 23)
 
 include_directories(Pacman)
 include_directories(Pacman/S2D)
@@ -28,5 +28,5 @@ add_executable(Pacman
         Pacman/S2D/SpriteBatch.h
         Pacman/S2D/Texture2D.h
         Pacman/main.cpp
-        Pacman/Pacman.cpp
-        Pacman/Pacman.h)
+        Pacman/TankGame.cpp
+        Pacman/TankGame.h)

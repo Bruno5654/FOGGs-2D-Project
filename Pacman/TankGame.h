@@ -1,0 +1,128 @@
+#pragma once
+
+// If Windows and not in Debug, this will run without a console window
+// You can use this to output information when debugging using cout or cerr
+#ifdef WIN32 
+	#ifndef _DEBUG
+		#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+	#endif
+#endif
+
+//Macro
+#define AMMOPICKUPCOUNT 15
+#define ENEMYCOUNT 3
+
+// Just need to include main header file
+#include "S2D/S2D.h"
+#include<time.h>
+
+// Reduces the amount of typing by including all classes in S2D namespace
+using namespace S2D;
+
+// Data to represent Player
+struct Player
+{
+	Vector2* _playerPosition;
+	Vector2* _playerLastPosition;
+	Vector2* _playerTurretPosition;
+	Vector2* _mousePosition;
+	Rect* _playerSourceRect;
+	Rect* _playerTurretSourceRect;
+	Texture2D* _playerTexture;
+	Texture2D* _playerTurretTexture;
+
+	int _playerDirection;
+	int _playerFrame;
+	int _playerCurrentFrameTime;
+	int _playerAmmoCount;
+	float _turretRotation;
+
+	bool _isPlayerMoving;
+	bool isPlayerDead;
+};
+
+// Data to represent Ammo
+struct AmmoPickup
+{
+	Rect* _ammoRect;
+	Texture2D* _ammoTexture;
+	Vector2* position;
+	int _ammoFrame;
+	int _ammoCurrentFrameTime;
+	int _ammoFrameCount;
+	bool _isFollowingMouse;
+};
+
+struct MovingEnemy
+{
+	Vector2* position;
+	Texture2D* texture;
+	Rect* sourceRect;
+	int direction;
+	float speed;
+};
+
+// Declares the Pacman class which inherits from the Game class.
+// This allows us to overload the Game class methods to help us
+// load content, draw and update our game.
+class TankGame : public Game
+{
+private:
+	
+	//Input
+	void Input(int elapsedTime, Input::KeyboardState*state,Input::MouseState*mouseState);
+
+	//Check methods
+	void CheckPaused(Input::KeyboardState* state);
+	void CheckViewportCollision();
+
+	//Update methods
+	void UpdatePlayer(int elapsedTime);
+	void UpdateAmmoPickups(int i,int elapsedTime);
+	void UpdateDrone(MovingEnemy* drone, int elapsedTime);
+
+	//Constant data for Game Variables.
+	const float _cPlayerSpeed;
+	const int _cPlayerFrameTime;
+	const int _cAmmoFrameTime;
+
+	Player* _player;
+	MovingEnemy* _drones[ENEMYCOUNT];
+	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
+	Texture2D* _ammoTexture = new Texture2D();
+	Texture2D* _droneTexture = new Texture2D();
+
+	// Position for String
+	Vector2* _stringPosition;
+	Vector2* _stringPosition2;
+
+	//Data for Menu
+	Texture2D* _menuBackground;
+	Rect* _menuRectangle;
+	Vector2* _menuStringPosition;
+	Vector2* _startStringPosition;
+	bool _paused;
+	bool _escKeyDown;
+	bool _startGameMenu;
+
+
+public:
+	/// <summary> Constructs the Pacman class. </summary>
+	TankGame(int argc, char* argv[]);
+
+	/// <summary> Destroys any data associated with Player class. </summary>
+	virtual ~TankGame();
+
+	/// <summary> All content should be loaded in this method. </summary>
+	void virtual LoadContent();
+
+	/// <summary> Called every frame - update game logic here. </summary>
+	void virtual Update(int elapsedTime);
+
+	/// <summary> Called every frame - draw game here. </summary>
+	void virtual Draw(int elapsedTime);
+};
+
+bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
+float GetRadians(Vector2* p1, Vector2* p2);
+float GetDegrees(float radians);
