@@ -11,6 +11,7 @@
 //Macro
 #define AMMOPICKUPCOUNT 15
 #define ENEMYCOUNT 3
+#define EXPLOSIONS 5
 
 // Just need to include main header file
 #include "S2D/S2D.h"
@@ -46,8 +47,7 @@ struct Player
 struct AmmoPickup
 {
 	Rect* _ammoRect;
-	Texture2D* _ammoBlueTexture;
-	Texture2D* _ammoInvertedTexture;
+	Texture2D* _ammoTexture;
 	Vector2* position;
 	int _ammoFrame;
 	int _ammoCurrentFrameTime;
@@ -61,7 +61,21 @@ struct MovingEnemy
 	Texture2D* texture;
 	Rect* sourceRect;
 	int direction;
+	int _droneFrame;
+	int _droneCurrentFrame;
+	int _droneFrameCount;
 	float speed;
+};
+
+struct Explosion
+{
+	Vector2* position;
+	Texture2D* texture;
+	Rect* sourceRect;
+	int _boomFrame;
+	int _boomCurrentFrame;
+	int _boomFrameCount;
+	bool inUse;
 };
 
 // Declares the Pacman class which inherits from the Game class.
@@ -81,22 +95,24 @@ private:
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
 	void UpdateAmmoPickups(int i,int elapsedTime);
-	void UpdateDrone(MovingEnemy* drone, int elapsedTime);
+	void UpdateDrone(MovingEnemy* drone, int elapsedTime, int i);
+	void UpdateBoom(int elapsedTime,int i);
+	void ShowExplosion(Vector2* position);
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
 	const int _cAmmoFrameTime;
+	const int _cDroneFrameTime;
+	const int _cExplosionFrameTime;
 
 	Player* _player;
 	MovingEnemy* _drones[ENEMYCOUNT];
 	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
-	AmmoPickup* _cherryPickup;
+	Explosion* _explosions[EXPLOSIONS];
 	Texture2D* _ammoTexture = new Texture2D();
-	Texture2D* _ammoInvertTexture = new Texture2D();
-	Texture2D* _cherryTexture = new Texture2D();
-	Texture2D* _cherryInvertTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
+	Texture2D* _boomTexture = new Texture2D();
 
 	// Position for Strings
 	Vector2* _stringPosition;

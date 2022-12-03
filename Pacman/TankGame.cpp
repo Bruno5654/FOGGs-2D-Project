@@ -2,7 +2,7 @@
 #include <sstream>
 
 //Constructor
-TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500), _cDroneFrameTime(50),_cExplosionFrameTime(100)
 {
 	//Seed random
 	srand(time(NULL));
@@ -19,19 +19,24 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 		_ammoPickup[i]->_ammoFrame = rand() % 500 + 50;
 	}
 
-	_cherryPickup = new AmmoPickup();
-	_cherryPickup->_ammoFrameCount = rand() % 1;
-	_cherryPickup->_ammoCurrentFrameTime = 0;
-	_cherryPickup->_ammoFrame = rand() % 500 + 50;
-
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
 		_drones[i] = new MovingEnemy();
 		_drones[i]->direction = 0;
 		_drones[i]->speed = 0.2f;
-	
+		_drones[i]->_droneFrameCount = rand() % 1;
+		_drones[i]->_droneCurrentFrame = 0;
+		_drones[i]->_droneFrame = rand() % 500 + 50;
 	}
 	
+	for (int i = 0; i < EXPLOSIONS; i++)
+	{
+		_explosions[i] = new Explosion();
+		_explosions[i]->_boomFrameCount = 0;
+		_explosions[i]->_boomCurrentFrame = 0;
+		_explosions[i]->_boomFrame = rand() % 500 + 50;
+		_explosions[i]->inUse = false;
+	}
 	
 	
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
@@ -65,21 +70,21 @@ TankGame::~TankGame()
 		delete _drones[i];
 	}
 
+	for (int i = 0; i < EXPLOSIONS; i++)
+	{
+		delete _explosions[i]->position;
+		delete _explosions[i]->sourceRect;
+		delete _explosions[i];
+	}
+
 	delete _ammoTexture;
-	delete _ammoInvertTexture;
+	delete _boomTexture;
 	delete[] _ammoPickup;
-	delete _cherryTexture;
-	delete _cherryInvertTexture;
-	delete _cherryPickup->_ammoRect;
-	delete _cherryPickup->position;
-	delete _cherryPickup;
 	delete _menuBackground;
 	delete _player;
 	delete[] _drones;
 	delete _droneTexture;
 
-
-	
 }
 
 void TankGame::LoadContent() 
@@ -106,12 +111,10 @@ void TankGame::LoadContent()
 	_player->_turretRotation = 0.0f;
 
 	//Initilize Ammo
-	_ammoTexture->Load("Textures/Ammo1.tga", false);
-	_ammoInvertTexture->Load("Textures/Ammo2.tga", false);
+	_ammoTexture->Load("Textures/Ammo.png", false);
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{	
-		_ammoPickup[i]->_ammoBlueTexture = _ammoTexture;
-		_ammoPickup[i]->_ammoInvertedTexture = _ammoInvertTexture;
+		_ammoPickup[i]->_ammoTexture = _ammoTexture;
 		_ammoPickup[i]->_ammoRect = new Rect(0.0f, 0.0f, 16, 16);
 		_ammoPickup[i]->_ammoCurrentFrameTime = 0;
 		_ammoPickup[i]->_ammoFrameCount = 0;
@@ -120,27 +123,24 @@ void TankGame::LoadContent()
 	}
 
 	//Initilize Drones
-
-	_droneTexture->Load("Textures/BlueGhost.png", false);
+	_droneTexture->Load("Textures/Drone.png", false);
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
 		_drones[i]->texture = _droneTexture;
 		_drones[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
-		_drones[i]->sourceRect = new Rect(0.0f, 0.0f, 20, 20);
+		_drones[i]->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 
 	}
 
+	//Initilize Explosions
+	_boomTexture->Load("Textures/Explosion.png", false);
+	for (int i = 0; i < EXPLOSIONS; i++)
+	{
+		_explosions[i]->texture = _boomTexture;
+		_explosions[i]->position = new Vector2(-200,-200);
+		_explosions[i]->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 
-	//Initilize Cherry
-	_cherryTexture->Load("Textures/Cherry (1).png", false);
-	_cherryInvertTexture->Load("Textures/Cherry (2).png", true);
-	_cherryPickup->_ammoBlueTexture = _cherryTexture;
-	_cherryPickup->_ammoInvertedTexture = _cherryInvertTexture;
-	_cherryPickup->_ammoRect = new Rect(0.0f, 0.0f, 32, 32);
-	_cherryPickup->_ammoCurrentFrameTime = 0;
-	_cherryPickup->_ammoFrameCount = 0;
-	_cherryPickup->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
-	_cherryPickup->_isFollowingMouse = false;
+	}
 
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -203,29 +203,31 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state,Input::MouseSt
 		_player->_playerPosition->Y -= _cPlayerSpeed * elapsedTime;
 		_player->_playerDirection = 3;
 	}
-	
-	//Mouse player input.
-	if (CollisionCheck(mouseState->X, mouseState->Y, 1, 1, _cherryPickup->position->X, _cherryPickup->position->Y, _cherryPickup->_ammoRect->Width, _cherryPickup->_ammoRect->Height) && mouseState->LeftButton == Input::ButtonState::PRESSED)
-	{
-		_cherryPickup->_isFollowingMouse = true;
-	}
-	else if (mouseState->LeftButton == Input::ButtonState::RELEASED)
-	{
-		_cherryPickup->_isFollowingMouse = false;
-	}
-	
-	if (_cherryPickup->_isFollowingMouse)
-	{
-		_cherryPickup->position->X = mouseState->X;
-		_cherryPickup->position->Y = mouseState->Y;
-	}
 
 	_player->_mousePosition->X = mouseState->X;
 	_player->_mousePosition->Y = mouseState->Y;
 	
 }
 
-void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime)
+void TankGame::ShowExplosion(Vector2* position)
+{
+	bool foundBoom = false;
+
+	for (int i = 0; i < EXPLOSIONS; i++)
+	{
+		if (_explosions[i]->inUse == false)
+		{
+			_explosions[i]->position->X = position->X;
+			_explosions[i]->position->Y = position->Y;
+			_explosions[i]->inUse = true;
+			break;
+		}
+
+
+	}
+}
+
+void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime, int i)
 {
 	if (drone->direction == 0)//Move Right
 	{
@@ -244,6 +246,49 @@ void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime)
 	{
 		drone->direction = 0;
 	}
+	
+	//Tracking time since last drone animation frame change.
+	_drones[i]->_droneCurrentFrame += elapsedTime;
+	//Updating the drone frame.
+	if (_drones[i]->_droneCurrentFrame > _cDroneFrameTime)
+	{
+		_drones[i]->sourceRect->X = _drones[i]->sourceRect->Width * _drones[i]->_droneFrameCount;
+		_drones[i]->_droneFrameCount++;
+
+		if (_drones[i]->_droneFrameCount >= 2)
+		{
+			_drones[i]->_droneFrameCount = 0;
+		}
+
+		_drones[i]->_droneCurrentFrame = 0;
+	}
+}
+
+void TankGame::UpdateBoom(int elapsedTime, int i) 
+{
+	if (_explosions[i]->inUse == true)
+	{
+		//Tracking time since last drone animation frame change.
+		_explosions[i]->_boomCurrentFrame += elapsedTime;
+		//Updating the explosion frame.
+		if (_explosions[i]->_boomCurrentFrame > _cExplosionFrameTime)
+		{
+			_explosions[i]->sourceRect->X = _explosions[i]->sourceRect->Width * _explosions[i]->_boomFrameCount;
+			_explosions[i]->_boomFrameCount++;
+
+			if (_explosions[i]->_boomFrameCount >= 5)
+			{
+				_explosions[i]->_boomFrameCount = 0;
+				_explosions[i]->position->X = -200;
+				_explosions[i]->position->Y = -200;
+				_explosions[i]->inUse = false;
+
+			}
+
+			_explosions[i]->_boomCurrentFrame = 0;
+		}
+	}
+	
 }
 
 void TankGame::CheckPaused(Input::KeyboardState* state)
@@ -348,6 +393,7 @@ void TankGame::UpdateAmmoPickups(int i,int elapsedTime)
 	//Updating the ammo frame.
 	if (_ammoPickup[i]->_ammoCurrentFrameTime > _cAmmoFrameTime)
 	{
+		_ammoPickup[i]->_ammoRect->X = _ammoPickup[i]->_ammoRect->Width * _ammoPickup[i]->_ammoFrameCount;
 		_ammoPickup[i]->_ammoFrameCount++;
 
 		if (_ammoPickup[i]->_ammoFrameCount >= 2)
@@ -388,14 +434,20 @@ void TankGame::Update(int elapsedTime)
 			UpdateAmmoPickups(i, elapsedTime);
 		}
 
+		for (int i = 0; i < EXPLOSIONS; i++)
+		{
+			UpdateBoom(elapsedTime,i);
+		}
+
 		//Drone Collision
 		for (int i = 0; i < ENEMYCOUNT; i++)
 		{
-			UpdateDrone(_drones[i], elapsedTime);
+			UpdateDrone(_drones[i], elapsedTime,i);
 			if (CollisionCheck(_player->_playerPosition->X, _player->_playerPosition->Y, _player->_playerSourceRect->Width, _player->_playerSourceRect->Height, _drones[i]->position->X,
 				_drones[i]->position->Y, _drones[i]->sourceRect->Width, _drones[i]->sourceRect->Height))
 			{
 				_player->isPlayerDead = true;
+				ShowExplosion(_player->_playerPosition);
 				i = ENEMYCOUNT;
 			}
 		}
@@ -412,9 +464,6 @@ void TankGame::Update(int elapsedTime)
 				i = AMMOPICKUPCOUNT;
 			}
 		}
-		
-
-
 
 		CheckViewportCollision();
 
@@ -441,37 +490,19 @@ void TankGame::Draw(int elapsedTime)
 	//draw ammo
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
 	{
-		if (_ammoPickup[i]->_ammoFrameCount == 0)
-		{
-			// Draws Red Munchie
-			SpriteBatch::Draw(_ammoPickup[i]->_ammoInvertedTexture, _ammoPickup[i]->position, _ammoPickup[i]->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-		}
-		else
-		{
-			// Draw Blue Munchie
-			SpriteBatch::Draw(_ammoPickup[i]->_ammoBlueTexture, _ammoPickup[i]->position, _ammoPickup[i]->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-
-			if (_ammoPickup[i]->_ammoFrameCount >= 60)
-				_ammoPickup[i]->_ammoFrameCount = 0;
-		}
-	}
-
-	//draw cherry
-	if (_cherryPickup->_ammoFrameCount == 1)
-	{
-		// Draws Red Munchie
-		SpriteBatch::Draw(_cherryPickup->_ammoInvertedTexture, _cherryPickup->position, _cherryPickup->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-	}
-	else
-	{
-		// Draw Blue Munchie
-		SpriteBatch::Draw(_cherryPickup->_ammoBlueTexture, _cherryPickup->position, _cherryPickup->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		SpriteBatch::Draw(_ammoPickup[i]->_ammoTexture, _ammoPickup[i]->position, _ammoPickup[i]->_ammoRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 	}
 
 	//Draw drones
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
 		SpriteBatch::Draw(_drones[i]->texture, _drones[i]->position, _drones[i]->sourceRect);
+	}
+
+	//Draw explosions
+	for (int i = 0; i < EXPLOSIONS; i++)
+	{
+		SpriteBatch::Draw(_explosions[i]->texture, _explosions[i]->position, _explosions[i]->sourceRect);
 	}
 
 	// Draws Strings
