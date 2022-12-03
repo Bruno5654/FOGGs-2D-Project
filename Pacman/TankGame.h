@@ -9,7 +9,7 @@
 #endif
 
 //Macro
-#define AMMOPICKUPCOUNT 50
+#define AMMOPICKUPCOUNT 15
 #define ENEMYCOUNT 3
 
 // Just need to include main header file
@@ -34,6 +34,8 @@ struct Player
 	int _playerDirection;
 	int _playerFrame;
 	int _playerCurrentFrameTime;
+	int _score;
+	int _ammo;
 	float _turretRotation;
 
 	bool _isPlayerMoving;
@@ -96,8 +98,9 @@ private:
 	Texture2D* _cherryInvertTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 
-	// Position for String
+	// Position for Strings
 	Vector2* _stringPosition;
+	Vector2* _stringPosition2;
 
 	//Data for Menu
 	Texture2D* _menuBackground;

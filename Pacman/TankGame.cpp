@@ -91,18 +91,21 @@ void TankGame::LoadContent()
 	_player->_playerTurretTexture->Load("Textures/TankTurretSheet.png", false);
 	_player->_playerPosition = new Vector2(350.0f, 350.0f);
 	_player->_playerLastPosition = new Vector2(350.0f, 350.0f);
-	_player->_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	_player->_playerTurretPosition = new Vector2(0.0f, 0.0f);
-	_player->_playerTurretSourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_player->_mousePosition = new Vector2(0.0f, 0.0f);
+	_player->_playerTurretPosition = new Vector2(0.0f, 0.0f);
+	
+	_player->_playerSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_player->_playerTurretSourceRect = new Rect(0.0f, 0.0f, 32, 32);
+
 	_player->_playerDirection = 0;
 	_player->_playerCurrentFrameTime = 0;
 	_player->_playerFrame = 0;
+	_player->_score = 0;
+	_player->_ammo = 3;
 	_player->_isPlayerMoving = false;
 	_player->_turretRotation = 0.0f;
 
 	//Initilize Ammo
-	
 	_ammoTexture->Load("Textures/Ammo1.tga", false);
 	_ammoInvertTexture->Load("Textures/Ammo2.tga", false);
 	for (int i = 0; i < AMMOPICKUPCOUNT; i++)
@@ -141,6 +144,7 @@ void TankGame::LoadContent()
 
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
+	_stringPosition2 = new Vector2(10.0f, 50.0f);
 
 	//Set menu parameters
 	_menuBackground = new Texture2D();
@@ -168,13 +172,13 @@ bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int
 	return true;
 }
 
-float GetRadians(Vector2* p1, Vector2* p2)
+/*float GetRadians(Vector2* p1, Vector2* p2)
 {
 	float length1, length2;
 	length1 = p1->X - p2->Y;
 	length2 = p1->Y - p2->Y;
 	return (atan(length2 / length1));
-}
+}*/
 
 void TankGame::Input(int elapsedTime, Input::KeyboardState* state,Input::MouseState* mouseState)
 {
@@ -374,7 +378,7 @@ void TankGame::Update(int elapsedTime)
 		_player->_playerLastPosition->Y = _player->_playerPosition->Y;
 
 		//Determine turret rotation.
-		_player->_turretRotation = GetRadians(_player->_playerTurretPosition, _player->_mousePosition);
+		//_player->_turretRotation = GetRadians(_player->_playerTurretPosition, _player->_mousePosition);
 
 		Input(elapsedTime, keyboardState, mouseState);
 		UpdatePlayer(elapsedTime);
@@ -384,6 +388,7 @@ void TankGame::Update(int elapsedTime)
 			UpdateAmmoPickups(i, elapsedTime);
 		}
 
+		//Drone Collision
 		for (int i = 0; i < ENEMYCOUNT; i++)
 		{
 			UpdateDrone(_drones[i], elapsedTime);
@@ -395,6 +400,20 @@ void TankGame::Update(int elapsedTime)
 			}
 		}
 
+		//Ammo Collision
+		for (int i = 0; i < AMMOPICKUPCOUNT; i++)
+		{
+			if (CollisionCheck(_player->_playerPosition->X, _player->_playerPosition->Y, _player->_playerSourceRect->Width, _player->_playerSourceRect->Height, _ammoPickup[i]->position->X,
+				_ammoPickup[i]->position->Y, _ammoPickup[i]->_ammoRect->Width, _ammoPickup[i]->_ammoRect->Height))
+			{
+				_player->_ammo += 3;
+				_ammoPickup[i]->position->Y = -150;
+				_ammoPickup[i]->position->X = -150;
+				i = AMMOPICKUPCOUNT;
+			}
+		}
+		
+
 
 
 		CheckViewportCollision();
@@ -405,9 +424,10 @@ void TankGame::Update(int elapsedTime)
 void TankGame::Draw(int elapsedTime)
 {
 	// Allows us to easily create a string
-	std::stringstream stream;
-	//stream << "Player X: " << _player->_playerPosition->X << " Y: " << _player->_playerPosition->Y;
-	stream << "Turret radians: " << _player->_turretRotation;
+	std::stringstream score;
+	score << "Score: " << _player->_score;
+	std::stringstream ammo;
+	ammo << "Ammo: " << _player->_ammo;
 	
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	
@@ -454,8 +474,9 @@ void TankGame::Draw(int elapsedTime)
 		SpriteBatch::Draw(_drones[i]->texture, _drones[i]->position, _drones[i]->sourceRect);
 	}
 
-	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
+	// Draws Strings
+	SpriteBatch::DrawString(score.str().c_str(), _stringPosition, Color::Green);
+	SpriteBatch::DrawString(ammo.str().c_str(), _stringPosition2, Color::Green);
 	
 	if (_paused && !_startGameMenu)
 	{
