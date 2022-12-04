@@ -147,3 +147,4 @@ public:
 
 bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
 float GetRadians(Vector2 p1, Vector2 p2);
+static float getDegrees(float x, float y);

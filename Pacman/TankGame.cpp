@@ -180,6 +180,17 @@ bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int
 	return (atan(length2 / length1));
 }*/
 
+float getDegrees(float x, float y) {
+	float angle = 0;
+	if (x < 0) {
+		angle = (float)(270 - (atan(y / -x) * 180 / 3.14159));
+	}
+	else {
+		angle = (float)(90 + (atan(y / x) * 180 / 3.14159));
+	}
+	return int(angle);
+}
+
 void TankGame::Input(int elapsedTime, Input::KeyboardState* state,Input::MouseState* mouseState)
 {
 	//WASD player input and movement.
@@ -424,7 +435,7 @@ void TankGame::Update(int elapsedTime)
 		_player->_playerLastPosition->Y = _player->_playerPosition->Y;
 
 		//Determine turret rotation.
-		//_player->_turretRotation = GetRadians(_player->_playerTurretPosition, _player->_mousePosition);
+		_player->_turretRotation = getDegrees(_player->_mousePosition->X - _player->_playerTurretPosition->X , _player->_mousePosition->Y - _player->_playerTurretPosition->Y);
 
 		Input(elapsedTime, keyboardState, mouseState);
 		UpdatePlayer(elapsedTime);
@@ -466,6 +477,9 @@ void TankGame::Update(int elapsedTime)
 		}
 
 		CheckViewportCollision();
+		
+		//Set turret position.
+		_player->_playerTurretPosition = _player->_playerPosition;
 
 	}
 }
@@ -483,7 +497,6 @@ void TankGame::Draw(int elapsedTime)
 	if (!_player->isPlayerDead)
 	{
 		SpriteBatch::Draw(_player->_playerTexture, _player->_playerPosition, _player->_playerSourceRect); //Draws player.
-		//for rotation and origin look into the other draw.
 		SpriteBatch::Draw(_player->_playerTurretTexture, _player->_playerPosition, _player->_playerTurretSourceRect, _player->_playerTurretPosition, 1, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
 	}
 
