@@ -9,7 +9,6 @@
 #endif
 
 //Macro
-#define AMMOPICKUPCOUNT 15
 #define ENEMYCOUNT 3
 
 // Just need to include main header file
@@ -22,16 +21,16 @@ using namespace S2D;
 // Data to represent Player
 struct Player
 {
-	Vector2* _playerPosition;
-	Vector2* _playerLastPosition;
-	Vector2* _playerTurretPosition;
+	Vector2* _position;
+	Vector2* _lastPosition;
+	Vector2* _turretPosition;
 	Vector2* _mousePosition;
-	Rect* _playerSourceRect;
-	Rect* _playerTurretSourceRect;
-	Texture2D* _playerTexture;
-	Texture2D* _playerTurretTexture;
+	Rect* _sourceRect;
+	Rect* _turretSourceRect;
+	Texture2D* _texture;
+	Texture2D* _turretTexture;
 
-	int _playerDirection;
+	int _direction;
 	int _playerFrame;
 	int _playerCurrentFrameTime;
 	int _playerAmmoCount;
@@ -44,17 +43,34 @@ struct Player
 // Data to represent Ammo
 struct AmmoPickup
 {
-	Rect* _ammoRect;
-	Texture2D* _ammoTexture;
-	Vector2* position;
+	Rect* _sourceRect;
+	static Texture2D _texture; 
+	Vector2* _position;
 	int _ammoFrame;
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
-	bool _isFollowingMouse;
+	
+	AmmoPickup() 
+	{
+		_ammoFrameCount = rand() % 1;
+		_ammoCurrentFrameTime = 0;
+		_ammoFrame = rand() % 500 + 50;
+		_sourceRect = new Rect(0.0f, 0.0f, 16, 16);
+		_ammoCurrentFrameTime = 0;
+		_ammoFrameCount = 0;
+		_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+	}
+
+	//~AmmoPickup()
+	//{
+			//delete _sourceRect;
+			//delete _position;
+	//}
 };
 
 struct MovingEnemy
 {
+<<<<<<< Updated upstream
 	Vector2* position;
 	Texture2D* texture;
 	Rect* sourceRect;
@@ -62,6 +78,37 @@ struct MovingEnemy
 	float speed;
 };
 
+=======
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	int _direction;
+	int _droneFrame;
+	int _droneCurrentFrame;
+	int _droneFrameCount;
+	float _speed;
+};
+
+struct Explosion
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	int _boomFrame;
+	int _boomCurrentFrame;
+	int _boomFrameCount;
+	bool _inUse;
+};
+
+struct Bullet
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	float _speed;
+};
+
+>>>>>>> Stashed changes
 // Declares the Pacman class which inherits from the Game class.
 // This allows us to overload the Game class methods to help us
 // load content, draw and update our game.
@@ -79,7 +126,14 @@ private:
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
 	void UpdateAmmoPickups(int i,int elapsedTime);
+<<<<<<< Updated upstream
 	void UpdateDrone(MovingEnemy* drone, int elapsedTime);
+=======
+	void UpdateDrone(MovingEnemy* drone, int elapsedTime, int i);
+	void UpdateBoom(int elapsedTime,int i);
+	void ShowExplosion(Vector2* position);
+	void KillPlayer();
+>>>>>>> Stashed changes
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
@@ -88,7 +142,12 @@ private:
 
 	Player* _player;
 	MovingEnemy* _drones[ENEMYCOUNT];
+<<<<<<< Updated upstream
 	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
+=======
+	Explosion* _explosions[EXPLOSIONS];
+	vector < AmmoPickup > AmmoVector;
+>>>>>>> Stashed changes
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 
@@ -104,6 +163,9 @@ private:
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
+
+	int gameState;
+	int _initalAmmoCount = 20;
 
 
 public:
@@ -124,5 +186,10 @@ public:
 };
 
 bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
+<<<<<<< Updated upstream
 float GetRadians(Vector2* p1, Vector2* p2);
 float GetDegrees(float radians);
+=======
+static float getDegrees(float x, float y);
+
+>>>>>>> Stashed changes

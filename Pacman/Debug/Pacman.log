@@ -11,6 +11,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.3162
               _Ty=S2D::Input::Keys
           ]
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>' being compiled
+<<<<<<< Updated upstream
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(9,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(112,91): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(112,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -32,3 +33,35 @@ C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(38
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(387,76): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(387,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   Pacman.vcxproj -> C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Debug\TankGame.exe
+=======
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(63,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(63,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(8,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(77,18): warning C4154: deletion of an array expression; conversion to pointer supplied
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(110,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(110,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(168,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(170,12): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(201,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(202,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(250,63): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(271,72): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(317,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(327,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(379,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(384,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(395,67): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(442,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(457,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(456,150): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(456,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(456,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(466,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(469,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(468,152): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(468,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(468,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(507,20): warning C4018: '<': signed/unsigned mismatch
+TankGame.obj : error LNK2001: unresolved external symbol "public: static class S2D::Texture2D AmmoPickup::_texture" (?_texture@AmmoPickup@@2VTexture2D@S2D@@A)
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Debug\TankGame.exe : fatal error LNK1120: 1 unresolved externals
+>>>>>>> Stashed changes
