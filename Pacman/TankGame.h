@@ -3,13 +3,12 @@
 // If Windows and not in Debug, this will run without a console window
 // You can use this to output information when debugging using cout or cerr
 #ifdef WIN32 
-	#ifndef _DEBUG
-		#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-	#endif
+#ifndef _DEBUG
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
 #endif
 
 //Macro
-#define AMMOPICKUPCOUNT 15
 #define ENEMYCOUNT 3
 #define EXPLOSIONS 5
 
@@ -23,20 +22,20 @@ using namespace S2D;
 // Data to represent Player
 struct Player
 {
-	Vector2* _playerPosition;
-	Vector2* _playerLastPosition;
-	Vector2* _playerTurretPosition;
+	Vector2* _position;
+	Vector2* _lastPosition;
+	Vector2* _turretPosition;
 	Vector2* _mousePosition;
-	Rect* _playerSourceRect;
-	Rect* _playerTurretSourceRect;
-	Texture2D* _playerTexture;
-	Texture2D* _playerTurretTexture;
+	Rect* _sourceRect;
+	Rect* _turretSourceRect;
+	Texture2D* _texture;
+	Texture2D* _turretTexture;
 
-	int _playerDirection;
+	int _direction;
 	int _playerFrame;
 	int _playerCurrentFrameTime;
-	int _score;
 	int _ammo;
+	int _score;
 	float _turretRotation;
 
 	bool _isPlayerMoving;
@@ -46,47 +45,69 @@ struct Player
 // Data to represent Ammo
 struct AmmoPickup
 {
-	Rect* _ammoRect;
-	Texture2D* _ammoTexture;
-	Vector2* position;
+	Rect* _sourceRect;
+	static Texture2D _texture;
+	Vector2* _position;
 	int _ammoFrame;
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
-	bool _isFollowingMouse;
+
+	AmmoPickup()
+	{
+		_ammoFrameCount = rand() % 1;
+		_ammoCurrentFrameTime = 0;
+		_ammoFrame = rand() % 500 + 50;
+		_sourceRect = new Rect(0.0f, 0.0f, 16, 16);
+		_ammoCurrentFrameTime = 0;
+		_ammoFrameCount = 0;
+		_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+	}
+
+	//~AmmoPickup()
+	//{
+			//delete _sourceRect;
+			//delete _position;
+	//}
 };
 
 struct MovingEnemy
 {
-	Vector2* position;
-	Texture2D* texture;
-	Rect* sourceRect;
-	int direction;
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	int _direction;
 	int _droneFrame;
 	int _droneCurrentFrame;
 	int _droneFrameCount;
-	float speed;
+	float _speed;
 };
 
 struct Explosion
 {
-	Vector2* position;
-	Texture2D* texture;
-	Rect* sourceRect;
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
 	int _boomFrame;
 	int _boomCurrentFrame;
 	int _boomFrameCount;
-	bool inUse;
+	bool _inUse;
 };
 
-// Declares the Pacman class which inherits from the Game class.
-// This allows us to overload the Game class methods to help us
-// load content, draw and update our game.
+struct Bullet
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	float _speed;
+};
+
+
 class TankGame : public Game
 {
 private:
-	
+
 	//Input
-	void Input(int elapsedTime, Input::KeyboardState*state,Input::MouseState*mouseState);
+	void Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState);
 
 	//Check methods
 	void CheckPaused(Input::KeyboardState* state);
@@ -94,27 +115,28 @@ private:
 
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
-	void UpdateAmmoPickups(int i,int elapsedTime);
-	void UpdateDrone(MovingEnemy* drone, int elapsedTime, int i);
-	void UpdateBoom(int elapsedTime,int i);
+	void UpdateAmmoPickups(int i, int elapsedTime);
+	void UpdateDrone(MovingEnemy * drone, int elapsedTime, int i);
+	void UpdateBoom(int elapsedTime, int i);
 	void ShowExplosion(Vector2* position);
+	void KillPlayer();
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
 	const int _cAmmoFrameTime;
-	const int _cDroneFrameTime;
 	const int _cExplosionFrameTime;
+	const int _cDroneFrameTime;
 
 	Player* _player;
 	MovingEnemy* _drones[ENEMYCOUNT];
-	AmmoPickup* _ammoPickup[AMMOPICKUPCOUNT];
 	Explosion* _explosions[EXPLOSIONS];
+	vector < AmmoPickup > AmmoVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
 
-	// Position for Strings
+	// Position for String
 	Vector2* _stringPosition;
 	Vector2* _stringPosition2;
 
@@ -126,6 +148,9 @@ private:
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
+
+	int gameState;
+	int _initalAmmoCount = 20;
 
 
 public:
@@ -146,5 +171,5 @@ public:
 };
 
 bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
-float GetRadians(Vector2 p1, Vector2 p2);
 static float getDegrees(float x, float y);
+
