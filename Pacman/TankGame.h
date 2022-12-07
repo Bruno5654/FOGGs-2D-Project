@@ -47,14 +47,15 @@ struct Player
 struct AmmoPickup
 {
 	Rect* _sourceRect;
-	static Texture2D _texture;
+	Texture2D* _texture;
 	Vector2* _position;
 	int _ammoFrame;
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
 
-	AmmoPickup()
+	AmmoPickup(Texture2D* texture)
 	{
+		_texture = texture;
 		_ammoFrameCount = rand() % 1;
 		_ammoCurrentFrameTime = 0;
 		_ammoFrame = rand() % 500 + 50;
@@ -63,12 +64,6 @@ struct AmmoPickup
 		_ammoFrameCount = 0;
 		_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 	}
-
-	//~AmmoPickup()
-	//{
-			//delete _sourceRect;
-			//delete _position;
-	//}
 };
 
 struct MovingEnemy
@@ -97,9 +92,20 @@ struct Explosion
 struct Bullet
 {
 	Vector2* _position;
+	Vector2* _direction;
 	Texture2D* _texture;
 	Rect* _sourceRect;
 	float _speed;
+	float _orientation;
+
+	Bullet(Texture2D* texture)
+	{
+		_texture = texture;
+		_position = new Vector2(0, 0);
+		_sourceRect = new Rect(0.0f, 0.0f, 8, 8);
+		_speed = 26.0f;
+		_orientation = 0.0f;
+	}	
 };
 
 struct Building
@@ -128,8 +134,10 @@ private:
 	void UpdateAmmoPickups(int i, int elapsedTime);
 	void UpdateDrone(MovingEnemy * drone, int elapsedTime, int i);
 	void UpdateBoom(int elapsedTime, int i);
+	void UpdateBullet(int elapsedTime, int i);
 	void ShowExplosion(Vector2* position);
 	void KillPlayer();
+	void FireBullet();
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
@@ -143,10 +151,12 @@ private:
 	Explosion* _explosions[EXPLOSIONS];
 	Building* _buildings[BUILDINGS];
 	vector < AmmoPickup > AmmoVector;
+	vector < Bullet > BulletVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
 	Texture2D* _buildingTexture = new Texture2D();
+	Texture2D* _bulletTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -160,6 +170,7 @@ private:
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
+	bool _leftMouseBeginDown; //True on first tick of mouse pressed.
 
 	int gameState;
 	int _initalAmmoCount = 20;

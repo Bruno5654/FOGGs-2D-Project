@@ -28,5 +28,5 @@ add_executable(Pacman
         Pacman/S2D/SpriteBatch.h
         Pacman/S2D/Texture2D.h
         Pacman/main.cpp
-        Pacman/Pacman.cpp
-        Pacman/Pacman.h)
+        Pacman/TankGame.cpp
+        Pacman/TankGame.h)

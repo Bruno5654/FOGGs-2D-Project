@@ -12,13 +12,6 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	_player = new Player();
 	_player->isPlayerDead = false;
 
-	//AmmoPickup::_texture.Load("Textures/Ammo.png", false);
-
-	for (int i = 0; i < _initalAmmoCount; i++)
-	{
-		AmmoVector.push_back(*new AmmoPickup());
-	}
-
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
 		_drones[i] = new MovingEnemy();
@@ -92,6 +85,7 @@ TankGame::~TankGame()
 	delete _droneTexture;
 	delete[] * _buildings;
 	delete _buildingTexture;
+	delete _bulletTexture;
 
 	delete _stringPosition;
 	delete _stringPosition2;
@@ -116,6 +110,7 @@ void TankGame::LoadContent()
 	_player->_direction = 0;
 	_player->_playerCurrentFrameTime = 0;
 	_player->_playerFrame = 0;
+	_player->_ammo = 3;
 	_player->_turretRotation = 0.0f;
 
 	//Initilize Drones
@@ -161,6 +156,17 @@ void TankGame::LoadContent()
 		_buildings[i]->_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	}
 
+	//Initalize Ammo
+	_ammoTexture->Load("Textures/Ammo.png", false);
+
+	for (int i = 0; i < _initalAmmoCount; i++)
+	{
+		AmmoVector.push_back(*new AmmoPickup(_ammoTexture));
+	}
+
+	//Initalize Bullet
+	_bulletTexture->Load("Textures/Bullet.png", false);
+
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 	_stringPosition2 = new Vector2(10.0f, 50.0f);
@@ -177,6 +183,8 @@ void TankGame::LoadContent()
 
 	//Set gameState
 	gameState = 1;
+
+	
 }
 
 bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2) //Returning true = collision
@@ -236,10 +244,33 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseS
 		}
 	}
 
+	if (mouseState->LeftButton == Input::ButtonState::PRESSED && _player->_ammo >= 1 && !_leftMouseBeginDown)
+	{
+		_leftMouseBeginDown = true;
+		FireBullet();
+	}
+
+	if (mouseState->LeftButton == Input::ButtonState::RELEASED)
+	{
+		_leftMouseBeginDown = false;
+	}
 
 	_player->_mousePosition->X = mouseState->X;
 	_player->_mousePosition->Y = mouseState->Y;
 
+}
+
+void TankGame::FireBullet()
+{
+	Bullet currentBullet = Bullet(_bulletTexture);
+	currentBullet._position->X = _player->_turretPosition->X;
+	currentBullet._position->Y = _player->_turretPosition->Y;
+	currentBullet._orientation = _player->_turretRotation;
+	Vector2 _dir = Vector2(_player->_mousePosition->X - _player->_turretPosition->X, _player->_mousePosition->Y - _player->_turretPosition->Y);
+	_dir.Normalize();
+	currentBullet._direction = &_dir;
+	BulletVector.push_back(currentBullet);
+	_player->_ammo--;
 }
 
 void TankGame::ShowExplosion(Vector2 * position)
@@ -415,7 +446,7 @@ void TankGame::UpdatePlayer(int elapsedTime)
 		}
 	}
 
-	//Changing player direction
+	//Changing player sprite direction
 	_player->_sourceRect->Y = _player->_sourceRect->Height * _player->_direction;
 }
 
@@ -437,6 +468,13 @@ void TankGame::UpdateAmmoPickups(int i, int elapsedTime)
 
 		AmmoVector[i]._ammoCurrentFrameTime = 0;
 	}
+
+}
+
+void TankGame::UpdateBullet(int elapsedTime, int i)
+{
+	Vector2* penis = BulletVector[i]._direction;
+	*BulletVector[i]._position += *penis * BulletVector[i]._speed;
 
 }
 
@@ -481,6 +519,11 @@ void TankGame::Update(int elapsedTime)
 			for (int i = 0; i < EXPLOSIONS; i++)
 			{
 				UpdateBoom(elapsedTime, i);
+			}
+			
+			for (int i = 0; i < BulletVector.size(); i++)
+			{
+				UpdateBullet(elapsedTime, i);
 			}
 
 			//Drone Collision
@@ -534,9 +577,9 @@ void TankGame::Draw(int elapsedTime)
 
 	if (!_player->isPlayerDead)
 	{
-		Vector2* _turretOffset = new Vector2(16, 24);
+		Vector2* _turretRotOffset = new Vector2(16, 24);
 		SpriteBatch::Draw(_player->_texture, _player->_position, _player->_sourceRect); //Draws player.
-		SpriteBatch::Draw(_player->_turretTexture, _player->_turretPosition, _player->_turretSourceRect, _turretOffset, 1, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
+		SpriteBatch::Draw(_player->_turretTexture, _player->_turretPosition, _player->_turretSourceRect, _turretRotOffset, 1, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
 	}
 
 	//Draw Buildings
@@ -546,15 +589,22 @@ void TankGame::Draw(int elapsedTime)
 	}
 
 	//draw ammo
-	for (int i = 0; i < AmmoVector.size(); i++)
+	for (const auto &ammo : AmmoVector)
 	{
-		//SpriteBatch::Draw(AmmoPickup::_texture, AmmoVector[i]._position, AmmoVector[i]._sourceRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		SpriteBatch::Draw(ammo._texture, ammo._position, ammo._sourceRect, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 	}
 
 	//Draw drones
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
 		SpriteBatch::Draw(_drones[i]->_texture, _drones[i]->_position, _drones[i]->_sourceRect);
+	}
+
+	//Draw bullets
+	for (const auto &bullet: BulletVector)
+	{
+		Vector2* _bulletRotOffset = new Vector2(4, 4);
+		SpriteBatch::Draw(bullet._texture, bullet._position, bullet._sourceRect, _bulletRotOffset,1,bullet._orientation, Color::White, SpriteEffect::NONE);
 	}
 	
 	// Draws String

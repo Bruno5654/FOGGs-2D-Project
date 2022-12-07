@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Pacman"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Pacman">
+				<Option output="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Pacman.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/AL"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/SOIL"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../include"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 Pacman"/>
+					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Pacman/fast">
+				<Option output="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Pacman.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/AL"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL"/>
+					<Add directory="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/SOIL"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../include"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed"/>
+					<Add directory="C:/Program Files/JetBrains/CLion 2022.2.3/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/11.2.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 Pacman/fast"/>
+					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/PROGRA~1/JETBRA~1/CLION2~1.3/bin/mingw/bin/mingw32-make.exe -f &quot;C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/AL/al.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/AL/alc.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/AL/alure.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/Audio.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL/freeglut.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL/freeglut_ext.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL/freeglut_std.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/GL/glut.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/Game.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/Graphics.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/Input.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/MathHelper.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/S2D.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/SOIL/SOIL.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/SoundEffect.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/SpriteBatch.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/S2D/Texture2D.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/TankGame.cpp">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/TankGame.h">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/Pacman/main.cpp">
+			<Option target="Pacman"/>
+		</Unit>
+		<Unit filename="C:/Users/bruno/OneDrive/Documents/GitHub/FOGGs-2D-Project/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

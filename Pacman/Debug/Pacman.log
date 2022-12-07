@@ -11,39 +11,39 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.3162
               _Ty=S2D::Input::Keys
           ]
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>' being compiled
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(64,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(64,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(65,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(65,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(9,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(127,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(127,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(150,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(150,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(153,113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(153,84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(153,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(153,35): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(207,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(209,12): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(240,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(241,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(287,63): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(307,72): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(351,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(361,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(414,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(419,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(430,67): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(476,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(491,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(490,150): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(490,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(490,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(500,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(503,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(502,152): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(502,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(502,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(549,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(122,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(122,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(145,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(145,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(148,113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(148,84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(148,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(148,35): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(215,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(217,12): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(258,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(259,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(318,63): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(338,72): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(382,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(392,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(445,58): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(450,57): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(461,67): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(514,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(524,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(534,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(533,150): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(533,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(533,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(543,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(546,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(545,152): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(545,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.cpp(545,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   main.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\vector(2061,41): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>::_Mypair': class 'std::_Compressed_pair<std::allocator<S2D::Input::Keys>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>'
           with
@@ -56,7 +56,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.3162
               _Ty=S2D::Input::Keys
           ]
 C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>' being compiled
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(64,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(64,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(65,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Pacman\TankGame.h(65,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating Code...
   Pacman.vcxproj -> C:\Users\bruno\OneDrive\Documents\GitHub\FOGGs-2D-Project\Debug\TankGame.exe
