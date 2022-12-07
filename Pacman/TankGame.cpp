@@ -136,13 +136,28 @@ void TankGame::LoadContent()
 		_explosions[i]->_position = new Vector2(-200, -200);
 		_explosions[i]->_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	}
-
+	
 	//Initilize Buildings
+	
+	Vector2* randPos = new Vector2(0, 0);
 	_buildingTexture->Load("Textures/Building.png", false);
 	for (int i = 0; i < BUILDINGS; i++)
 	{
+		bool isOk = false;
+		while (!isOk)
+		{
+			isOk = true;
+			randPos = new Vector2((rand() % (Graphics::GetViewportWidth()-50)), (rand() % (Graphics::GetViewportHeight()-50)));
+			for (int j = 0; j < i; j++)
+			{
+				isOk = !CollisionCheck(randPos->X, randPos->Y, 32, 32, _buildings[j]->_position->X, _buildings[j]->_position->Y, 32, 32);
+				if (!isOk)
+					break;
+				
+			}
+		}
+		_buildings[i]->_position = randPos;
 		_buildings[i]->_texture = _buildingTexture;
-		_buildings[i]->_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 		_buildings[i]->_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	}
 
@@ -164,7 +179,7 @@ void TankGame::LoadContent()
 	gameState = 1;
 }
 
-bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2)
+bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2) //Returning true = collision
 {
 	int left1 = x1, left2 = x2, right1 = x1 + width1, right2 = x2 + width2, top1 = y1, top2 = y2, bottom1 = y1 + height1, bottom2 = y2 + height2;
 	if (bottom1 < top2)
