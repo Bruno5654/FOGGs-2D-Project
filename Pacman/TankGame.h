@@ -11,6 +11,7 @@
 //Macro
 #define ENEMYCOUNT 3
 #define EXPLOSIONS 5
+#define BUILDINGS 30
 
 // Just need to include main header file
 #include "S2D/S2D.h"
@@ -101,6 +102,15 @@ struct Bullet
 	float _speed;
 };
 
+struct Building
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	int _stage;
+	bool _isPassable;
+};
+
 
 class TankGame : public Game
 {
@@ -131,10 +141,12 @@ private:
 	Player* _player;
 	MovingEnemy* _drones[ENEMYCOUNT];
 	Explosion* _explosions[EXPLOSIONS];
+	Building* _buildings[BUILDINGS];
 	vector < AmmoPickup > AmmoVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
+	Texture2D* _buildingTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
