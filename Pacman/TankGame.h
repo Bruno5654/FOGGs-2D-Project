@@ -10,7 +10,6 @@
 
 //Macro
 #define ENEMYCOUNT 3
-#define EXPLOSIONS 5
 #define BUILDINGS 30
 
 // Just need to include main header file
@@ -53,7 +52,7 @@ struct AmmoPickup
 	int _ammoCurrentFrameTime;
 	int _ammoFrameCount;
 
-	AmmoPickup(Texture2D* texture)
+	AmmoPickup(Texture2D* texture, Vector2* position)
 	{
 		_texture = texture;
 		_ammoFrameCount = rand() % 1;
@@ -62,7 +61,7 @@ struct AmmoPickup
 		_sourceRect = new Rect(0.0f, 0.0f, 16, 16);
 		_ammoCurrentFrameTime = 0;
 		_ammoFrameCount = 0;
-		_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+		_position = position;
 	}
 };
 
@@ -86,25 +85,37 @@ struct Explosion
 	int _boomFrame;
 	int _boomCurrentFrame;
 	int _boomFrameCount;
-	bool _inUse;
+	Explosion(Texture2D* texture)
+	{
+		_texture = texture;
+		_position = new Vector2(-200,-200);
+		_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+		_boomCurrentFrame = 0;
+		_boomFrameCount = 0;
+		_boomFrame = rand() % 500 + 50;
+
+	}
 };
 
 struct Bullet
 {
 	Vector2* _position;
-	Vector2* _direction;
+	Vector2 _direction;
 	Texture2D* _texture;
 	Rect* _sourceRect;
 	float _speed;
 	float _orientation;
+	bool _moving;
 
 	Bullet(Texture2D* texture)
 	{
 		_texture = texture;
 		_position = new Vector2(0, 0);
 		_sourceRect = new Rect(0.0f, 0.0f, 8, 8);
-		_speed = 26.0f;
+		_speed = 10.0f;
 		_orientation = 0.0f;
+		_moving = true;
+
 	}	
 };
 
@@ -116,7 +127,6 @@ struct Building
 	int _stage;
 	bool _isPassable;
 };
-
 
 class TankGame : public Game
 {
@@ -135,6 +145,7 @@ private:
 	void UpdateDrone(MovingEnemy * drone, int elapsedTime, int i);
 	void UpdateBoom(int elapsedTime, int i);
 	void UpdateBullet(int elapsedTime, int i);
+	void UpdateBuilding(int i);
 	void ShowExplosion(Vector2* position);
 	void KillPlayer();
 	void FireBullet();
@@ -148,10 +159,10 @@ private:
 
 	Player* _player;
 	MovingEnemy* _drones[ENEMYCOUNT];
-	Explosion* _explosions[EXPLOSIONS];
 	Building* _buildings[BUILDINGS];
 	vector < AmmoPickup > AmmoVector;
 	vector < Bullet > BulletVector;
+	vector < Explosion > ExplosionVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
@@ -173,8 +184,7 @@ private:
 	bool _leftMouseBeginDown; //True on first tick of mouse pressed.
 
 	int gameState;
-	int _initalAmmoCount = 20;
-
+	int _initalAmmoCount = 5;
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>

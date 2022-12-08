@@ -3,7 +3,7 @@
 #include <iostream>
 
 //Constructor
-TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500), _cExplosionFrameTime(50), _cDroneFrameTime(100)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500), _cExplosionFrameTime(75), _cDroneFrameTime(100)
 {
 	//Seed random
 	srand(time(NULL));
@@ -29,16 +29,6 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 		_buildings[i]->_isPassable = false;
 	}
 
-	for (int i = 0; i < EXPLOSIONS; i++)
-	{
-		_explosions[i] = new Explosion();
-		_explosions[i]->_boomFrameCount = 0;
-		_explosions[i]->_boomCurrentFrame = 0;
-		_explosions[i]->_boomFrame = rand() % 500 + 50;
-		_explosions[i]->_inUse = false;
-	}
-
-
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
 	Input::Initialise();
 
@@ -61,13 +51,6 @@ TankGame::~TankGame()
 		delete _drones[i]->_position;
 		delete _drones[i]->_sourceRect;
 		delete _drones[i];
-	}
-
-	for (int i = 0; i < EXPLOSIONS; i++)
-	{
-		delete _explosions[i]->_position;
-		delete _explosions[i]->_sourceRect;
-		delete _explosions[i];
 	}
 
 	for (int i = 0; i < BUILDINGS; i++)
@@ -114,7 +97,6 @@ void TankGame::LoadContent()
 	_player->_turretRotation = 0.0f;
 
 	//Initilize Drones
-
 	_droneTexture->Load("Textures/Drone.png", false);
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
@@ -125,15 +107,8 @@ void TankGame::LoadContent()
 
 	//Initilize Explosions
 	_boomTexture->Load("Textures/Explosion.png", false);
-	for (int i = 0; i < EXPLOSIONS; i++)
-	{
-		_explosions[i]->_texture = _boomTexture;
-		_explosions[i]->_position = new Vector2(-200, -200);
-		_explosions[i]->_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	}
 	
 	//Initilize Buildings
-	
 	Vector2* randPos = new Vector2(0, 0);
 	_buildingTexture->Load("Textures/Building.png", false);
 	for (int i = 0; i < BUILDINGS; i++)
@@ -161,7 +136,8 @@ void TankGame::LoadContent()
 
 	for (int i = 0; i < _initalAmmoCount; i++)
 	{
-		AmmoVector.push_back(*new AmmoPickup(_ammoTexture));
+		randPos = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+		AmmoVector.push_back(*new AmmoPickup(_ammoTexture, randPos));
 	}
 
 	//Initalize Bullet
@@ -262,32 +238,24 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseS
 
 void TankGame::FireBullet()
 {
-	Bullet currentBullet = Bullet(_bulletTexture);
-	currentBullet._position->X = _player->_turretPosition->X;
-	currentBullet._position->Y = _player->_turretPosition->Y;
-	currentBullet._orientation = _player->_turretRotation;
+	Bullet* currentBullet = new Bullet(_bulletTexture);
+	currentBullet->_position->X = _player->_turretPosition->X;
+	currentBullet->_position->Y = _player->_turretPosition->Y;
+	currentBullet->_orientation = _player->_turretRotation;
 	Vector2 _dir = Vector2(_player->_mousePosition->X - _player->_turretPosition->X, _player->_mousePosition->Y - _player->_turretPosition->Y);
 	_dir.Normalize();
-	currentBullet._direction = &_dir;
-	BulletVector.push_back(currentBullet);
+	currentBullet->_direction = _dir;
+	BulletVector.push_back(*currentBullet);
 	_player->_ammo--;
 }
 
 void TankGame::ShowExplosion(Vector2 * position)
 {
-	bool foundBoom = false;
-
-	for (int i = 0; i < EXPLOSIONS; i++)
-	{
-		if (_explosions[i]->_inUse == false && foundBoom == false)
-		{
-			foundBoom = true;
-			_explosions[i]->_position->X = position->X;
-			_explosions[i]->_position->Y = position->Y;
-			_explosions[i]->_inUse = true;
-			break;
-		}
-	}
+	Explosion currentExplosion = Explosion(_boomTexture);
+	currentExplosion._position->X = position->X;
+	currentExplosion._position->Y = position->Y;
+	ExplosionVector.push_back(currentExplosion);
+	
 }
 
 void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime, int i)
@@ -328,31 +296,27 @@ void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime, int i)
 
 void TankGame::UpdateBoom(int elapsedTime, int i)
 {
-	if (_explosions[i]->_inUse == true)
+	//Tracking time since last drone animation frame change.
+	ExplosionVector[i]._boomCurrentFrame += elapsedTime;
+	//Updating the explosion frame.
+	if (ExplosionVector[i]._boomCurrentFrame > _cExplosionFrameTime)
 	{
-		//Tracking time since last drone animation frame change.
-		_explosions[i]->_boomCurrentFrame += elapsedTime;
-		//Updating the explosion frame.
-		if (_explosions[i]->_boomCurrentFrame > _cExplosionFrameTime)
+		ExplosionVector[i]._sourceRect->X = ExplosionVector[i]._sourceRect->Width * ExplosionVector[i]._boomFrameCount;
+		ExplosionVector[i]._boomFrameCount++;
+
+		if (ExplosionVector[i]._boomFrameCount >= 6)
 		{
-			_explosions[i]->_sourceRect->X = _explosions[i]->_sourceRect->Width * _explosions[i]->_boomFrameCount;
-			_explosions[i]->_boomFrameCount++;
-
-			if (_explosions[i]->_boomFrameCount >= 5)
+			ExplosionVector[i]._boomFrameCount = 0;
+			ExplosionVector[i]._position->X = -200;
+			ExplosionVector[i]._position->Y = -200;
+			if (_player->isPlayerDead == true)
 			{
-				_explosions[i]->_boomFrameCount = 0;
-				_explosions[i]->_position->X = -200;
-				_explosions[i]->_position->Y = -200;
-				_explosions[i]->_inUse = false;
-				if (_player->isPlayerDead = true)
-				{
-					gameState = 2;
-				}
+				gameState = 2;
+				_paused = true;
 			}
-			_explosions[i]->_boomCurrentFrame = 0;
 		}
+		ExplosionVector[i]._boomCurrentFrame = 0;
 	}
-
 }
 
 void TankGame::CheckPaused(Input::KeyboardState* state)
@@ -372,6 +336,7 @@ void TankGame::CheckPaused(Input::KeyboardState* state)
 		_startGameMenu = false;
 		_paused = !_paused;
 	}
+
 }
 
 void TankGame::CheckViewportCollision()
@@ -473,15 +438,44 @@ void TankGame::UpdateAmmoPickups(int i, int elapsedTime)
 
 void TankGame::UpdateBullet(int elapsedTime, int i)
 {
-	Vector2* penis = BulletVector[i]._direction;
-	*BulletVector[i]._position += *penis * BulletVector[i]._speed;
+	if (BulletVector[i]._moving)
+	{
+		Vector2 bulletVec = BulletVector[i]._direction;
+		*BulletVector[i]._position += bulletVec * BulletVector[i]._speed;
+	}
+}
 
+void TankGame::UpdateBuilding(int i) 
+{
+	
+	if (_buildings[i]->_stage > 3)
+		_buildings[i]->_stage = 3;
+
+	switch (_buildings[i]->_stage)
+	{
+	case 1:
+		_buildings[i]->_sourceRect->X = 0;
+		break;
+	case 2:
+		_buildings[i]->_sourceRect->X = 32;
+		break;
+	case 3:
+		_buildings[i]->_sourceRect->X = 64;
+		_buildings[i]->_isPassable = true;
+		break;
+	default:
+		_buildings[i]->_sourceRect->X = 0;
+		break;
+	}
 }
 
 void TankGame::KillPlayer()
 {
 	_player->isPlayerDead = true;
 	ShowExplosion(_player->_position);
+	_player->_position->X = -200;
+	_player->_position->Y = -200;
+	
 }
 
 void TankGame::Update(int elapsedTime)
@@ -516,7 +510,7 @@ void TankGame::Update(int elapsedTime)
 				UpdateAmmoPickups(i, elapsedTime);
 			}
 
-			for (int i = 0; i < EXPLOSIONS; i++)
+			for (int i = 0; i < ExplosionVector.size(); i++)
 			{
 				UpdateBoom(elapsedTime, i);
 			}
@@ -524,6 +518,11 @@ void TankGame::Update(int elapsedTime)
 			for (int i = 0; i < BulletVector.size(); i++)
 			{
 				UpdateBullet(elapsedTime, i);
+			}
+
+			for (int i = 0; i < BUILDINGS; i++)
+			{
+				UpdateBuilding(i);
 			}
 
 			//Drone Collision
@@ -551,7 +550,52 @@ void TankGame::Update(int elapsedTime)
 				}
 			}
 
-			CheckViewportCollision();
+			//Bullet on Building Collision
+			for (int i = 0; i < BUILDINGS; i++)
+			{
+				for (int j = 0; j < BulletVector.size(); j++)
+				{
+					if (CollisionCheck(_buildings[i]->_position->X, _buildings[i]->_position->Y, _buildings[i]->_sourceRect->Width, _buildings[i]->_sourceRect->Height, BulletVector[j]._position->X,
+						BulletVector[j]._position->Y, BulletVector[j]._sourceRect->Width, BulletVector[j]._sourceRect->Height))
+					{
+						if (_buildings[i]->_stage < 3)
+						{
+							BulletVector[j]._moving = false;
+							BulletVector[j]._position->Y = -150;
+							BulletVector[j]._position->X = -150;
+							ShowExplosion(_buildings[i]->_position);
+							_buildings[i]->_stage++;
+						}
+						
+					}
+				}
+			}
+			
+			//Bullet on Drone Collision
+			for (int i = 0; i < ENEMYCOUNT; i++)
+			{
+				for (int j = 0; j < BulletVector.size(); j++)
+				{
+					if (CollisionCheck(_drones[i]->_position->X, _drones[i]->_position->Y, _drones[i]->_sourceRect->Width, _drones[i]->_sourceRect->Height, BulletVector[j]._position->X,
+						BulletVector[j]._position->Y, BulletVector[j]._sourceRect->Width, BulletVector[j]._sourceRect->Height))
+					{
+						Vector2* dronePosVec = new Vector2(_drones[i]->_position->X, _drones[i]->_position->Y);
+						BulletVector[j]._moving = false;
+						BulletVector[j]._position->Y = -150;
+						BulletVector[j]._position->X = -150;
+						ShowExplosion(_drones[i]->_position);
+						AmmoVector.push_back(*new AmmoPickup(_ammoTexture, dronePosVec));
+						_drones[i]->_position->Y = -400;
+						_drones[i]->_position->Y = -400;
+						_drones[i]->_speed = 0.0f;
+						_player->_score += 2;
+
+					}
+				}
+			}
+
+			if(!_player->isPlayerDead)
+				CheckViewportCollision();
 
 			//Set turret position.
 			_player->_turretPosition->X = _player->_position->X + 16;
@@ -612,26 +656,33 @@ void TankGame::Draw(int elapsedTime)
 	SpriteBatch::DrawString(Ammo.str().c_str(), _stringPosition2, Color::Green);
 
 	//Draw explosions
-	for (int i = 0; i < EXPLOSIONS; i++)
+	for (const auto& boom : ExplosionVector)
 	{
-		SpriteBatch::Draw(_explosions[i]->_texture, _explosions[i]->_position, _explosions[i]->_sourceRect);
+		SpriteBatch::Draw(boom._texture, boom._position, boom._sourceRect);
 	}
 
 	// Draws Strings
 	SpriteBatch::DrawString(Score.str().c_str(), _stringPosition, Color::Green);
 	SpriteBatch::DrawString(Ammo.str().c_str(), _stringPosition2, Color::Green);
 
-		if (_paused && !_startGameMenu)
+		if (_paused && !_startGameMenu && gameState != 2)
 		{
 			std::stringstream menuStream;
 			menuStream << "Paused";
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _menuStringPosition, Color::White);
 		}
-		else if (_paused && _startGameMenu)
+		else if (_paused && _startGameMenu && gameState != 2)
 		{
 			std::stringstream menuStream;
 			menuStream << "Press Space to Start";
+			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
+			SpriteBatch::DrawString(menuStream.str().c_str(), _startStringPosition, Color::Green);
+		}
+		else if (_paused && gameState == 2)
+		{
+			std::stringstream menuStream;
+			menuStream << "Game Over!";
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _startStringPosition, Color::Green);
 		}
@@ -640,3 +691,4 @@ void TankGame::Draw(int elapsedTime)
 
 	SpriteBatch::EndDraw(); // Ends Drawing
 }
+
