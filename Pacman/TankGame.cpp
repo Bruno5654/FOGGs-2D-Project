@@ -1,9 +1,8 @@
 #include "TankGame.h"
-#include <sstream>
-#include <iostream>
+
 
 //Constructor
-TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500), _cExplosionFrameTime(75), _cDroneFrameTime(100)
+TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1f), _cPlayerFrameTime(100), _cAmmoFrameTime(500), _cExplosionFrameTime(75), _cEnemyFrameTime(100)
 {
 	//Seed random
 	srand(time(NULL));
@@ -12,15 +11,6 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	_player = new Player();
 	_player->isPlayerDead = false;
 
-	for (int i = 0; i < ENEMYCOUNT; i++)
-	{
-		_drones[i] = new MovingEnemy();
-		_drones[i]->_direction = 0;
-		_drones[i]->_speed = 0.2f;
-		_drones[i]->_droneFrameCount = rand() % 1;
-		_drones[i]->_droneCurrentFrame = 0;
-		_drones[i]->_droneFrame = rand() % 500 + 50;
-	}
 
 	for (int i = 0; i < BUILDINGS; i++)
 	{
@@ -46,13 +36,6 @@ TankGame::~TankGame()
 	delete _player->_turretPosition;
 	delete _player->_mousePosition;
 
-	for (int i = 0; i < ENEMYCOUNT; i++)
-	{
-		delete _drones[i]->_position;
-		delete _drones[i]->_sourceRect;
-		delete _drones[i];
-	}
-
 	for (int i = 0; i < BUILDINGS; i++)
 	{
 		delete _buildings[i]->_position;
@@ -64,11 +47,11 @@ TankGame::~TankGame()
 	delete _boomTexture;
 	delete _menuBackground;
 	delete _player;
-	delete[] * _drones;
 	delete _droneTexture;
 	delete[] * _buildings;
 	delete _buildingTexture;
 	delete _bulletTexture;
+	delete _missleTexture;
 
 	delete _stringPosition;
 	delete _stringPosition2;
@@ -98,12 +81,6 @@ void TankGame::LoadContent()
 
 	//Initilize Drones
 	_droneTexture->Load("Textures/Drone.png", false);
-	for (int i = 0; i < ENEMYCOUNT; i++)
-	{
-		_drones[i]->_texture = _droneTexture;
-		_drones[i]->_position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
-		_drones[i]->_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-	}
 
 	//Initilize Explosions
 	_boomTexture->Load("Textures/Explosion.png", false);
@@ -143,6 +120,9 @@ void TankGame::LoadContent()
 	//Initalize Bullet
 	_bulletTexture->Load("Textures/Bullet.png", false);
 
+	//Initalize Missle Enemey.
+	_missleTexture->Load("Textures/Missle.png", false);
+
 	//Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
 	_stringPosition2 = new Vector2(10.0f, 50.0f);
@@ -159,6 +139,11 @@ void TankGame::LoadContent()
 
 	//Set gameState
 	gameState = 1;
+
+	//High score
+	ifstream inFile("HighScore.txt");
+	getline(inFile, _highScore);
+	inFile.close();
 
 	
 }
@@ -178,7 +163,8 @@ bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int
 	return true;
 }
 
-float getDegrees(float x, float y) {
+float getDegrees(float x, float y) //Calculate the inverse tangent (radians) and convert it to degrees for draw function.
+{
 	float angle = 0;
 
 	if (x < 0) {
@@ -191,6 +177,11 @@ float getDegrees(float x, float y) {
 	angle = (int(180 - angle) % 360) + 180;
 
 	return int(angle);
+}
+
+int Lerp(int a, int b, float c) //Linear interpolation.
+{
+	return(a + c*(b - a));
 }
 
 void TankGame::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState)
@@ -220,6 +211,7 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseS
 		}
 	}
 
+	//Mouse input.
 	if (mouseState->LeftButton == Input::ButtonState::PRESSED && _player->_ammo >= 1 && !_leftMouseBeginDown)
 	{
 		_leftMouseBeginDown = true;
@@ -236,7 +228,7 @@ void TankGame::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseS
 
 }
 
-void TankGame::FireBullet()
+void TankGame::FireBullet() //Create bullet with correct direction.
 {
 	Bullet* currentBullet = new Bullet(_bulletTexture);
 	currentBullet->_position->X = _player->_turretPosition->X;
@@ -249,7 +241,7 @@ void TankGame::FireBullet()
 	_player->_ammo--;
 }
 
-void TankGame::ShowExplosion(Vector2 * position)
+void TankGame::ShowExplosion(Vector2 * position) 
 {
 	Explosion currentExplosion = Explosion(_boomTexture);
 	currentExplosion._position->X = position->X;
@@ -258,39 +250,39 @@ void TankGame::ShowExplosion(Vector2 * position)
 	
 }
 
-void TankGame::UpdateDrone(MovingEnemy* drone, int elapsedTime, int i)
+void TankGame::UpdateDrone(int elapsedTime, int i)
 {
-	if (drone->_direction == 0)//Move Right
+	if (DroneVector[i]._direction == 0)//Move Right
 	{
-		drone->_position->X += drone->_speed * elapsedTime;
+		DroneVector[i]._position->X += DroneVector[i]._speed * elapsedTime;
 	}
-	else if (drone->_direction == 1)//Move Left
+	else if (DroneVector[i]._direction == 1)//Move Left
 	{
-		drone->_position->X -= drone->_speed * elapsedTime;
+		DroneVector[i]._position->X -= DroneVector[i]._speed * elapsedTime;
 	}
 
-	if (drone->_position->X + drone->_sourceRect->Width >= Graphics::GetViewportWidth())//Change direction on right edge.
+	if (DroneVector[i]._position->X + DroneVector[i]._sourceRect->Width >= Graphics::GetViewportWidth())//Change direction on right edge.
 	{
-		drone->_direction = 1;
+		DroneVector[i]._direction = 1;
 	}
-	else if (drone->_position->X <= 0)
+	else if (DroneVector[i]._position->X <= 0)
 	{
-		drone->_direction = 0;
+		DroneVector[i]._direction = 0;
 	}
 
 	//Tracking time since last drone animation frame change.
-	_drones[i]->_droneCurrentFrame += elapsedTime;
+	DroneVector[i]._droneCurrentFrame += elapsedTime;
 	//Updating the drone frame.
-	if (_drones[i]->_droneCurrentFrame > _cDroneFrameTime)
+	if (DroneVector[i]._droneCurrentFrame > _cEnemyFrameTime)
 	{
-		_drones[i]->_sourceRect->X = _drones[i]->_sourceRect->Width * _drones[i]->_droneFrameCount;
-		_drones[i]->_droneFrameCount++;
+		DroneVector[i]._sourceRect->X = DroneVector[i]._sourceRect->Width * DroneVector[i]._droneFrameCount;
+		DroneVector[i]._droneFrameCount++;
 
-		if (_drones[i]->_droneFrameCount >= 2)
+		if (DroneVector[i]._droneFrameCount >= 2)
 		{
-			_drones[i]->_droneFrameCount = 0;
+			DroneVector[i]._droneFrameCount = 0;
 		}
-		_drones[i]->_droneCurrentFrame = 0;
+		DroneVector[i]._droneCurrentFrame = 0;
 	}
 }
 
@@ -309,7 +301,7 @@ void TankGame::UpdateBoom(int elapsedTime, int i)
 			ExplosionVector[i]._boomFrameCount = 0;
 			ExplosionVector[i]._position->X = -200;
 			ExplosionVector[i]._position->Y = -200;
-			if (_player->isPlayerDead == true)
+			if (_player->isPlayerDead == true) //Update the game state provided the explosion is for the player.
 			{
 				gameState = 2;
 				_paused = true;
@@ -469,12 +461,70 @@ void TankGame::UpdateBuilding(int i)
 	}
 }
 
+void TankGame::UpdateMissle(int elapsedTime,int i)
+{
+	//Move missle towards player using Lerp.
+	if (MissleVector[i]._shouldMove)
+	{
+		MissleVector[i]._position->X = ceil(Lerp(MissleVector[i]._position->X, _player->_position->X, 0.01f)); //ceil rounds up to the ceiling.
+		MissleVector[i]._position->Y = ceil(Lerp(MissleVector[i]._position->Y, _player->_position->Y, 0.01f));
+	}
+	
+
+	//Tracking time since last animation frame change.
+	MissleVector[i]._currentFrame += elapsedTime;
+	//Updating the frame.
+	if (MissleVector[i]._currentFrame > _cEnemyFrameTime)
+	{
+		MissleVector[i]._sourceRect->X = MissleVector[i]._sourceRect->Width * MissleVector[i]._frameCount;
+		MissleVector[i]._frameCount++;
+
+		if (MissleVector[i]._frameCount >= 2)
+		{
+			MissleVector[i]._frameCount = 0;
+		}
+		MissleVector[i]._currentFrame = 0;
+	}
+
+	MissleVector[i]._direction = getDegrees(_player->_position->X - MissleVector[i]._position->X, _player->_position->Y - MissleVector[i]._position->Y);
+}
+
 void TankGame::KillPlayer()
 {
 	_player->isPlayerDead = true;
 	ShowExplosion(_player->_position);
 	_player->_position->X = -200;
 	_player->_position->Y = -200;
+
+	//Check if new high score.
+	if (_player->_score > stoi(_highScore))
+	{
+		fstream outFile("HighScore.txt");
+		outFile << _player->_score << "\n";
+		outFile.close();
+	}
+	
+}
+
+void TankGame::SpawnEnemy() 
+{
+	int enemyToSpawn;
+
+	enemyToSpawn = rand() % 2;
+
+	LerpEnemy* currentEnemy = new LerpEnemy(_missleTexture);
+	MissleVector.push_back(*currentEnemy);
+
+	/*if (enemyToSpawn == 1)
+	{
+		LerpEnemy* currentEnemy = new LerpEnemy(_missleTexture);
+		MissleVector.push_back(*currentEnemy);
+	}
+	else
+	{
+		MovingEnemy* currentEnemy = new MovingEnemy(_droneTexture);
+		DroneVector.push_back(*currentEnemy);
+	}*/
 	
 }
 
@@ -495,6 +545,8 @@ void TankGame::Update(int elapsedTime)
 		//For things that need to stop when paused.
 		if (!_paused)
 		{
+			totalTime += elapsedTime / 1000.0f;
+			
 			//Determine players last position for isMoving.
 			_player->_lastPosition->X = _player->_position->X;
 			_player->_lastPosition->Y = _player->_position->Y;
@@ -526,15 +578,25 @@ void TankGame::Update(int elapsedTime)
 			}
 
 			//Drone Collision
-			for (int i = 0; i < ENEMYCOUNT; i++)
+			for (int i = 0; i < DroneVector.size(); i++)
 			{
-				UpdateDrone(_drones[i], elapsedTime, i);
-				if (CollisionCheck(_player->_position->X, _player->_position->Y, _player->_sourceRect->Width, _player->_sourceRect->Height, _drones[i]->_position->X,
-					_drones[i]->_position->Y, _drones[i]->_sourceRect->Width, _drones[i]->_sourceRect->Height))
+				UpdateDrone(elapsedTime, i);
+				if (CollisionCheck(_player->_position->X, _player->_position->Y, _player->_sourceRect->Width, _player->_sourceRect->Height, DroneVector[i]._position->X,
+					DroneVector[i]._position->Y, DroneVector[i]._sourceRect->Width, DroneVector[i]._sourceRect->Height))
 				{
 					KillPlayer();
-					i = ENEMYCOUNT;
+				}
+			}
 
+			//Missle Collision
+			for (int i = 0; i < MissleVector.size(); i++)
+			{
+				UpdateMissle(elapsedTime, i);
+				if (CollisionCheck(_player->_position->X, _player->_position->Y, _player->_sourceRect->Width, _player->_sourceRect->Height, MissleVector[i]._position->X,
+					MissleVector[i]._position->Y, MissleVector[i]._sourceRect->Width, MissleVector[i]._sourceRect->Height))
+				{
+					MissleVector.erase(MissleVector.begin() + i);
+					KillPlayer();
 				}
 			}
 
@@ -545,8 +607,7 @@ void TankGame::Update(int elapsedTime)
 					AmmoVector[i]._position->Y, AmmoVector[i]._sourceRect->Width, AmmoVector[i]._sourceRect->Height))
 				{
 					_player->_ammo += 3;
-					AmmoVector[i]._position->Y = -150;
-					AmmoVector[i]._position->X = -150;
+					AmmoVector.erase(AmmoVector.begin() + i);
 				}
 			}
 
@@ -560,9 +621,7 @@ void TankGame::Update(int elapsedTime)
 					{
 						if (_buildings[i]->_stage < 3)
 						{
-							BulletVector[j]._moving = false;
-							BulletVector[j]._position->Y = -150;
-							BulletVector[j]._position->X = -150;
+							BulletVector.erase(BulletVector.begin() + j);
 							ShowExplosion(_buildings[i]->_position);
 							_buildings[i]->_stage++;
 						}
@@ -572,23 +631,38 @@ void TankGame::Update(int elapsedTime)
 			}
 			
 			//Bullet on Drone Collision
-			for (int i = 0; i < ENEMYCOUNT; i++)
+			for (int i = 0; i < DroneVector.size(); i++)
 			{
 				for (int j = 0; j < BulletVector.size(); j++)
 				{
-					if (CollisionCheck(_drones[i]->_position->X, _drones[i]->_position->Y, _drones[i]->_sourceRect->Width, _drones[i]->_sourceRect->Height, BulletVector[j]._position->X,
+					if (CollisionCheck(DroneVector[i]._position->X, DroneVector[i]._position->Y, DroneVector[i]._sourceRect->Width, DroneVector[i]._sourceRect->Height, BulletVector[j]._position->X,
 						BulletVector[j]._position->Y, BulletVector[j]._sourceRect->Width, BulletVector[j]._sourceRect->Height))
 					{
-						Vector2* dronePosVec = new Vector2(_drones[i]->_position->X, _drones[i]->_position->Y);
-						BulletVector[j]._moving = false;
-						BulletVector[j]._position->Y = -150;
-						BulletVector[j]._position->X = -150;
-						ShowExplosion(_drones[i]->_position);
+						Vector2* dronePosVec = new Vector2(DroneVector[i]._position->X, DroneVector[i]._position->Y);
+						BulletVector.erase(BulletVector.begin() + j);
+						ShowExplosion(DroneVector[i]._position);
 						AmmoVector.push_back(*new AmmoPickup(_ammoTexture, dronePosVec));
-						_drones[i]->_position->Y = -400;
-						_drones[i]->_position->Y = -400;
-						_drones[i]->_speed = 0.0f;
+						DroneVector.erase(DroneVector.begin() + i);
 						_player->_score += 2;
+
+					}
+				}
+			}
+
+			//Bullet on Missle Collision
+			for (int i = 0; i < MissleVector.size(); i++)
+			{
+				for (int j = 0; j < BulletVector.size(); j++)
+				{
+					if (CollisionCheck(MissleVector[i]._position->X, MissleVector[i]._position->Y, MissleVector[i]._sourceRect->Width, MissleVector[i]._sourceRect->Height, BulletVector[j]._position->X,
+						BulletVector[j]._position->Y, BulletVector[j]._sourceRect->Width, BulletVector[j]._sourceRect->Height))
+					{
+						Vector2* missPosVec = new Vector2(MissleVector[i]._position->X, MissleVector[i]._position->Y);
+						BulletVector.erase(BulletVector.begin() + j);
+						ShowExplosion(MissleVector[i]._position);
+						AmmoVector.push_back(*new AmmoPickup(_ammoTexture, missPosVec));
+						MissleVector.erase(MissleVector.begin()+i);
+						_player->_score += 3;
 
 					}
 				}
@@ -601,6 +675,12 @@ void TankGame::Update(int elapsedTime)
 			_player->_turretPosition->X = _player->_position->X + 16;
 			_player->_turretPosition->Y = _player->_position->Y + 16;
 
+			if (totalTime > 5)
+			{
+				SpawnEnemy();
+				totalTime = 0;
+			}
+				
 		}
 		break;
 	}
@@ -623,7 +703,7 @@ void TankGame::Draw(int elapsedTime)
 	{
 		Vector2* _turretRotOffset = new Vector2(16, 24);
 		SpriteBatch::Draw(_player->_texture, _player->_position, _player->_sourceRect); //Draws player.
-		SpriteBatch::Draw(_player->_turretTexture, _player->_turretPosition, _player->_turretSourceRect, _turretRotOffset, 1, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
+		SpriteBatch::Draw(_player->_turretTexture, _player->_turretPosition, _player->_turretSourceRect, _turretRotOffset, 1.0f, _player->_turretRotation, Color::White, SpriteEffect::NONE); //Draws player turret.
 	}
 
 	//Draw Buildings
@@ -639,9 +719,16 @@ void TankGame::Draw(int elapsedTime)
 	}
 
 	//Draw drones
-	for (int i = 0; i < ENEMYCOUNT; i++)
+	for (const auto& drone : DroneVector)
 	{
-		SpriteBatch::Draw(_drones[i]->_texture, _drones[i]->_position, _drones[i]->_sourceRect);
+		SpriteBatch::Draw(drone._texture, drone._position, drone._sourceRect);
+	}
+
+	//Draw Missles
+	Vector2* _missleRotOffset = new Vector2(16, 2);
+	for (const auto& missle : MissleVector)
+	{
+		SpriteBatch::Draw(missle._texture, missle._position, missle._sourceRect, _missleRotOffset, 1.0f, missle._direction, Color::White, SpriteEffect::NONE);
 	}
 
 	//Draw bullets
@@ -675,7 +762,7 @@ void TankGame::Draw(int elapsedTime)
 		else if (_paused && _startGameMenu && gameState != 2)
 		{
 			std::stringstream menuStream;
-			menuStream << "Press Space to Start";
+			menuStream << "Current High Score is " << _highScore << "\nPress Space to start.";
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _startStringPosition, Color::Green);
 		}
@@ -691,4 +778,6 @@ void TankGame::Draw(int elapsedTime)
 
 	SpriteBatch::EndDraw(); // Ends Drawing
 }
+
+
 

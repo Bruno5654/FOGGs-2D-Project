@@ -9,12 +9,16 @@
 #endif
 
 //Macro
-#define ENEMYCOUNT 3
 #define BUILDINGS 30
 
 // Just need to include main header file
 #include "S2D/S2D.h"
-#include<time.h>
+#include <string>
+#include <time.h>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <math.h>
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -75,6 +79,42 @@ struct MovingEnemy
 	int _droneCurrentFrame;
 	int _droneFrameCount;
 	float _speed;
+	MovingEnemy(Texture2D* texture)
+	{
+		_texture = texture;
+		_direction = 0;
+		_speed = 0.2f;
+		_droneFrameCount = rand() % 1;
+		_droneCurrentFrame = 0;
+		_droneFrame = rand() % 500 + 50;
+		_position = new Vector2(0, (rand() % Graphics::GetViewportHeight()-50));
+		_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	}
+};
+
+struct LerpEnemy
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	float _direction;
+	int _frame;
+	int _currentFrame;
+	int _frameCount;
+	float _speed;
+	bool _shouldMove;
+	LerpEnemy(Texture2D* texture)
+	{
+		_texture = texture;
+		_direction = 0;
+		_speed = 0.2f;
+		_frameCount = rand() % 1;
+		_currentFrame = 0;
+		_frame = rand() % 500 + 50;
+		_position = new Vector2(0, (rand() % Graphics::GetViewportHeight() - 50));
+		_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+		_shouldMove = true;
+	}
 };
 
 struct Explosion
@@ -93,7 +133,6 @@ struct Explosion
 		_boomCurrentFrame = 0;
 		_boomFrameCount = 0;
 		_boomFrame = rand() % 500 + 50;
-
 	}
 };
 
@@ -142,32 +181,36 @@ private:
 	//Update methods
 	void UpdatePlayer(int elapsedTime);
 	void UpdateAmmoPickups(int i, int elapsedTime);
-	void UpdateDrone(MovingEnemy * drone, int elapsedTime, int i);
+	void UpdateDrone(int elapsedTime, int i);
 	void UpdateBoom(int elapsedTime, int i);
 	void UpdateBullet(int elapsedTime, int i);
 	void UpdateBuilding(int i);
+	void UpdateMissle(int elapsedTime,int i);
 	void ShowExplosion(Vector2* position);
 	void KillPlayer();
 	void FireBullet();
+	void SpawnEnemy();
 
 	//Constant data for Game Variables.
 	const float _cPlayerSpeed;
 	const int _cPlayerFrameTime;
 	const int _cAmmoFrameTime;
 	const int _cExplosionFrameTime;
-	const int _cDroneFrameTime;
+	const int _cEnemyFrameTime;
 
 	Player* _player;
-	MovingEnemy* _drones[ENEMYCOUNT];
 	Building* _buildings[BUILDINGS];
 	vector < AmmoPickup > AmmoVector;
 	vector < Bullet > BulletVector;
 	vector < Explosion > ExplosionVector;
+	vector < MovingEnemy > DroneVector;
+	vector < LerpEnemy > MissleVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
 	Texture2D* _buildingTexture = new Texture2D();
 	Texture2D* _bulletTexture = new Texture2D();
+	Texture2D* _missleTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -178,6 +221,9 @@ private:
 	Rect* _menuRectangle;
 	Vector2* _menuStringPosition;
 	Vector2* _startStringPosition;
+
+	string _highScore;
+
 	bool _paused;
 	bool _escKeyDown;
 	bool _startGameMenu;
@@ -185,6 +231,7 @@ private:
 
 	int gameState;
 	int _initalAmmoCount = 5;
+	float totalTime;
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
@@ -205,4 +252,7 @@ public:
 
 bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
 static float getDegrees(float x, float y);
+int Lerp(int a, int b, float c);
+
+
 
