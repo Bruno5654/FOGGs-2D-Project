@@ -95,9 +95,11 @@ struct MovingEnemy
 struct LerpEnemy
 {
 	Vector2* _position;
+	Vector2 _direction;
 	Texture2D* _texture;
 	Rect* _sourceRect;
-	float _direction;
+	float _orientation;
+
 	int _frame;
 	int _currentFrame;
 	int _frameCount;
@@ -106,8 +108,8 @@ struct LerpEnemy
 	LerpEnemy(Texture2D* texture)
 	{
 		_texture = texture;
-		_direction = 0;
-		_speed = 0.2f;
+		_orientation = 0.0f;
+		_speed = 2.0f;
 		_frameCount = rand() % 1;
 		_currentFrame = 0;
 		_frame = rand() % 500 + 50;
@@ -158,6 +160,26 @@ struct Bullet
 	}	
 };
 
+struct LandMine
+{
+	Vector2* _position;
+	Texture2D* _texture;
+	Rect* _sourceRect;
+	int _frame;
+	int _currentFrame;
+	int _frameCount;
+
+	LandMine(Texture2D* texture)
+	{
+		_texture = texture;
+		_position = new Vector2(0, 0);
+		_sourceRect = new Rect(0.0f, 0.0f, 8, 8);
+		_frameCount = rand() % 1;
+		_currentFrame = 0;
+		_frame = rand() % 500 + 50;
+	}
+};
+
 struct Building
 {
 	Vector2* _position;
@@ -186,9 +208,11 @@ private:
 	void UpdateBullet(int elapsedTime, int i);
 	void UpdateBuilding(int i);
 	void UpdateMissle(int elapsedTime,int i);
+	void UpdateMine(int elapsedTime, int i);
 	void ShowExplosion(Vector2* position);
 	void KillPlayer();
 	void FireBullet();
+	void FireMine();
 	void SpawnEnemy();
 
 	//Constant data for Game Variables.
@@ -197,6 +221,7 @@ private:
 	const int _cAmmoFrameTime;
 	const int _cExplosionFrameTime;
 	const int _cEnemyFrameTime;
+	const int _cLandMineFrameTime;
 
 	Player* _player;
 	Building* _buildings[BUILDINGS];
@@ -205,12 +230,14 @@ private:
 	vector < Explosion > ExplosionVector;
 	vector < MovingEnemy > DroneVector;
 	vector < LerpEnemy > MissleVector;
+	vector < LandMine > MinesVector;
 	Texture2D* _ammoTexture = new Texture2D();
 	Texture2D* _droneTexture = new Texture2D();
 	Texture2D* _boomTexture = new Texture2D();
 	Texture2D* _buildingTexture = new Texture2D();
 	Texture2D* _bulletTexture = new Texture2D();
 	Texture2D* _missleTexture = new Texture2D();
+	Texture2D* _landMineTexture = new Texture2D();
 
 	// Position for String
 	Vector2* _stringPosition;
@@ -228,10 +255,20 @@ private:
 	bool _escKeyDown;
 	bool _startGameMenu;
 	bool _leftMouseBeginDown; //True on first tick of mouse pressed.
+	bool _rightMouseBeginDown; //True on first tick of mouse pressed.
 
+	//Other Game Variables
 	int gameState;
 	int _initalAmmoCount = 5;
 	float totalTime;
+
+	//Sounds
+	SoundEffect* _cannon;
+	SoundEffect* _boom;
+	SoundEffect* _damage;
+	SoundEffect* _blip;
+	SoundEffect* _gameOver;
+	
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
