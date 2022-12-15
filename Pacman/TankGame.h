@@ -79,7 +79,7 @@ struct MovingEnemy
 	int _droneCurrentFrame;
 	int _droneFrameCount;
 	float _speed;
-	MovingEnemy(Texture2D* texture)
+	MovingEnemy(Texture2D* texture, Vector2* pos)
 	{
 		_texture = texture;
 		_direction = 0;
@@ -87,7 +87,7 @@ struct MovingEnemy
 		_droneFrameCount = rand() % 1;
 		_droneCurrentFrame = 0;
 		_droneFrame = rand() % 500 + 50;
-		_position = new Vector2(0, (rand() % Graphics::GetViewportHeight()-50));
+		_position = pos;
 		_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	}
 };
@@ -105,7 +105,7 @@ struct LerpEnemy
 	int _frameCount;
 	float _speed;
 	bool _shouldMove;
-	LerpEnemy(Texture2D* texture)
+	LerpEnemy(Texture2D* texture, Vector2* pos)
 	{
 		_texture = texture;
 		_orientation = 0.0f;
@@ -113,7 +113,7 @@ struct LerpEnemy
 		_frameCount = rand() % 1;
 		_currentFrame = 0;
 		_frame = rand() % 500 + 50;
-		_position = new Vector2(0, (rand() % Graphics::GetViewportHeight() - 50));
+		_position = pos;
 		_sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 		_shouldMove = true;
 	}

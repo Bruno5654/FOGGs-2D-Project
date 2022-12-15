@@ -11,7 +11,6 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	_player = new Player();
 	_player->isPlayerDead = false;
 
-
 	for (int i = 0; i < BUILDINGS; i++)
 	{
 		_buildings[i] = new Building();
@@ -22,7 +21,6 @@ TankGame::TankGame(int argc, char* argv[]) : Game(argc, argv), _cPlayerSpeed(0.1
 	Audio::Initialise();
 	Graphics::Initialise(argc, argv, this, 1280, 720, false, 25, 25, "Tank Game", 60);
 	Input::Initialise();
-	
 
 	// Start the Game Loop - This calls Update and Draw in game loop
 	Graphics::StartGameLoop();
@@ -288,30 +286,32 @@ void TankGame::FireBullet() //Create bullet with correct direction.
 
 void TankGame::FireMine()
 {
-	LandMine* currentMine = new LandMine(_landMineTexture);
-	
-	if (_player->_direction == 0)
+	if (MinesVector.size() < 6)
 	{
-		currentMine->_position->X = _player->_turretPosition->X - 30;
-		currentMine->_position->Y = _player->_turretPosition->Y;
+		LandMine* currentMine = new LandMine(_landMineTexture);
+
+		if (_player->_direction == 0)
+		{
+			currentMine->_position->X = _player->_turretPosition->X - 30;
+			currentMine->_position->Y = _player->_turretPosition->Y;
+		}
+		else if (_player->_direction == 1)
+		{
+			currentMine->_position->X = _player->_turretPosition->X;
+			currentMine->_position->Y = _player->_turretPosition->Y - 24;
+		}
+		else if (_player->_direction == 2)
+		{
+			currentMine->_position->X = _player->_turretPosition->X + 30;
+			currentMine->_position->Y = _player->_turretPosition->Y;
+		}
+		else
+		{
+			currentMine->_position->X = _player->_turretPosition->X;
+			currentMine->_position->Y = _player->_turretPosition->Y + 24;
+		}
+		MinesVector.push_back(*currentMine);
 	}
-	else if (_player->_direction == 1)
-	{
-		currentMine->_position->X = _player->_turretPosition->X;
-		currentMine->_position->Y = _player->_turretPosition->Y - 24;
-	}
-	else if (_player->_direction == 2)
-	{
-		currentMine->_position->X = _player->_turretPosition->X + 30;
-		currentMine->_position->Y = _player->_turretPosition->Y;
-	}
-	else
-	{
-		currentMine->_position->X = _player->_turretPosition->X;
-		currentMine->_position->Y = _player->_turretPosition->Y + 24;
-	}
-	MinesVector.push_back(*currentMine);
-	
 }
 
 void TankGame::ShowExplosion(Vector2 * position) 
@@ -420,7 +420,6 @@ void TankGame::CheckPaused(Input::KeyboardState* state)
 		_startGameMenu = false;
 		_paused = !_paused;
 	}
-
 }
 
 void TankGame::CheckViewportCollision()
@@ -517,7 +516,6 @@ void TankGame::UpdateAmmoPickups(int i, int elapsedTime)
 
 		AmmoVector[i]._ammoCurrentFrameTime = 0;
 	}
-
 }
 
 void TankGame::UpdateBullet(int elapsedTime, int i)
@@ -566,7 +564,6 @@ void TankGame::UpdateMissle(int elapsedTime,int i)
 		*MissleVector[i]._position += MissleVector[i]._direction * MissleVector[i]._speed;
 	}
 	
-
 	//Tracking time since last animation frame change.
 	MissleVector[i]._currentFrame += elapsedTime;
 	//Updating the frame.
@@ -599,26 +596,34 @@ void TankGame::KillPlayer()
 		outFile << _player->_score << "\n";
 		outFile.close();
 	}
-	
 }
 
 void TankGame::SpawnEnemy() 
 {
 	int enemyToSpawn;
 
-	enemyToSpawn = rand() % 2;
+	enemyToSpawn = rand() % 4;
 
 	if (enemyToSpawn == 1)
 	{
-		LerpEnemy* currentEnemy = new LerpEnemy(_missleTexture);
+		LerpEnemy* currentEnemy = new LerpEnemy(_missleTexture, new Vector2(0, (rand() % Graphics::GetViewportHeight() - 50)));
 		MissleVector.push_back(*currentEnemy);
 	}
-	else
+	else if (enemyToSpawn == 2)
 	{
-		MovingEnemy* currentEnemy = new MovingEnemy(_droneTexture);
+		MovingEnemy* currentEnemy = new MovingEnemy(_droneTexture, new Vector2(0, (rand() % Graphics::GetViewportHeight() - 50)));
 		DroneVector.push_back(*currentEnemy);
 	}
-	
+	else if (enemyToSpawn == 3)
+	{
+		LerpEnemy* currentEnemy = new LerpEnemy(_missleTexture, new Vector2(1270, (rand() % Graphics::GetViewportHeight() - 50)));
+		MissleVector.push_back(*currentEnemy);
+	}
+	else 
+	{
+		MovingEnemy* currentEnemy = new MovingEnemy(_droneTexture, new Vector2(1270, (rand() % Graphics::GetViewportHeight() - 50)));
+		DroneVector.push_back(*currentEnemy);
+	}
 }
 
 void TankGame::Update(int elapsedTime)
@@ -951,8 +956,8 @@ void TankGame::Draw(int elapsedTime)
 	}
 	
 	// Draws String
-	SpriteBatch::DrawString(Score.str().c_str(), _stringPosition, Color::Green);
-	SpriteBatch::DrawString(Ammo.str().c_str(), _stringPosition2, Color::Green);
+	SpriteBatch::DrawString(Score.str().c_str(), _stringPosition, Color::White);
+	SpriteBatch::DrawString(Ammo.str().c_str(), _stringPosition2, Color::White);
 
 	//Draw explosions
 	for (const auto& boom : ExplosionVector)
@@ -985,8 +990,6 @@ void TankGame::Draw(int elapsedTime)
 			SpriteBatch::Draw(_menuBackground, _menuRectangle, nullptr);
 			SpriteBatch::DrawString(menuStream.str().c_str(), _startStringPosition, Color::White);
 		}
-
-	
 
 	SpriteBatch::EndDraw(); // Ends Drawing
 }
